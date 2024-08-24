@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="icon" href="/images/logo.png" type="image/png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .nav {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #007bff;
+            display: flex;
+            align-items: center;
+            font-size: 1.1em;
+        }
+        .nav a i {
+            margin-right: 5px;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .cart-section, .products-section {
+            flex: 1;
+            margin: 0 10px;
+        }
+        .cart-section {
+            max-width: 400px;
+        }
+        .products-section {
+            max-width: 600px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .cart-items, .products {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .cart-item, .product {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .cart-item img, .product img {
+            max-width: 100px;
+            max-height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .cart-item .details, .product .details {
+            flex-grow: 1;
+            margin-left: 20px;
+        }
+        .cart-item h3, .product h3 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+        .cart-item p, .product p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .cart-item .price, .product .price {
+            font-weight: bold;
+            color: #333;
+        }
+        .cart-item .quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+        .cart-item .quantity label {
+            font-weight: bold;
+        }
+        .checkout-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkout-button:hover {
+            background-color: #0056b3;
+        }
+        .icon-button {
+            border: none;
+            background: none;
+            color: #333;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .icon-button:hover {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="/store"><i class="fas fa-store"></i> Store</a>
+        <a href="/cart"><i class="fas fa-shopping-cart"></i> Cart</a>
+        <a href="/login"><i class="fas fa-user"></i> Login</a>
+        <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
+        <a href="#" id="logout"><i class="fa fa-sign-out-alt"></i> Logout</a>
+
+    </div>
+    <div class="container">
+        <div class="cart-section">
+            <h1>Your Cart</h1>
+            <div id="cartItems" class="cart-items">
+                <p id="loading" style="width: 100%; text-align: center;">Loading cart...</p>
+            </div>
+            <button class="checkout-button" onclick="checkout()">
+                <i class="fa fa-credit-card"></i> Checkout
+            </button>
+        </div>
+        <div class="products-section">
+            <h2>Products</h2>
+            <div id="products" class="products">
+                <p id="products-loading" style="width: 100%; text-align: center;">Loading products...</p>
+            </div>
+        </div>
+    </div>
+    <script src="/js/cart.js"></script>
+</body>
+</html>

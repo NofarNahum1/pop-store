@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You</title>
+    <link rel="icon" href="/images/logo.png" type="image/png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .nav {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #007bff;
+            display: flex;
+            align-items: center;
+            font-size: 1.1em;
+        }
+        .nav a i {
+            margin-right: 5px;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .message {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .icon-button {
+            border: none;
+            background: none;
+            color: #007bff;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        .icon-button:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="/cart"><i class="fas fa-shopping-cart"></i> Cart</a>
+        <a href="/login"><i class="fas fa-user"></i> Login</a>
+        <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
+        <a href="#" id="logout" class="icon-button"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </div>
+    <div class="container">
+        <h1>Thank You for Your Purchase!</h1>
+        <p class="message">Your order has been successfully placed. We appreciate your business!</p>
+        <a href="/store" class="icon-button"><i class="fas fa-store"></i> Continue Shopping</a>
+    </div>
+</body>
+</html>

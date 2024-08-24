@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best-Selling Products</title>
+    <link rel="icon" href="/images/logo.png" type="image/png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #d8e5ef;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .nav {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #007bff;
+            display: flex;
+            align-items: center;
+            font-size: 1.1em;
+        }
+        .nav a i {
+            margin-right: 5px;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .statistics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .statistics-table th, .statistics-table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .statistics-table th {
+            background-color: #007bff;
+            color: white;
+        }
+        .statistics-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .statistics-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .chart-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="/store"><i class="fas fa-store"></i> Store</a>
+            <a href="#" onclick="checkAuthAndRedirectToCart()"><i class="fas fa-shopping-cart"></i> Cart</a>
+            <a href="/login"><i class="fas fa-user"></i> Login</a>
+            <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
+            <a href="#" id="logout"><i class="fa fa-sign-out-alt"></i> Logout</a>
+            <a href="/statistics"><i class="fas fa-chart-line"></i> Best Sellers</a>
+        </div>
+        <h1>Best-Selling Products</h1>
+        <table class="statistics-table">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Sales</th>
+                </tr>
+            </thead>
+            <tbody id="statistics">
+                <!-- Best-selling products will be displayed here -->
+            </tbody>
+        </table>
+        <div class="chart-container">
+            <canvas id="salesChart"></canvas>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/statistics.js"></script>
+</body>
+</html>

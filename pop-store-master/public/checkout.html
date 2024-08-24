@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="/images/logo.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #ecf0f1;
+            --text-color: #34495e;
+            --border-color: #bdc3c7;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .nav {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #007bff;
+            display: flex;
+            align-items: center;
+            font-size: 1.1em;
+        }
+        .nav a i {
+            margin-right: 5px;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        .order-summary, .payment-info {
+            margin-bottom: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid var(--border-color);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .total {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        #totalPrice {
+            font-size: 1.2em;
+            color: var(--secondary-color);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            cursor: pointer;
+            border: none;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #27ae60;
+        }
+
+        .icon {
+            margin-right: 10px;
+        }
+
+        .product-icon {
+            font-size: 1.5em;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="/store"><i class="fas fa-store"></i> Store</a>
+        <a href="/cart"><i class="fas fa-shopping-cart"></i> Cart</a>
+        <a href="/login"><i class="fas fa-user"></i> Login</a>
+        <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
+        <a href="#" id="logout"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="container">
+        <h1><i class="fas fa-shopping-cart icon"></i> Checkout</h1>
+        <div class="order-summary">
+            <h2><i class="fas fa-list-alt icon"></i> Order Summary</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="orderItems">
+                    <!-- Order items will be inserted here dynamically -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="total">Total Price:</td>
+                        <td id="totalPrice">$0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="payment-info">
+            <h2><i class="fas fa-credit-card icon"></i> Payment Information</h2>
+            <form id="paymentForm">
+                <div class="form-group">
+                    <label for="cardNumber"><i class="far fa-credit-card icon"></i> Card Number</label>
+                    <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardExpiry"><i class="far fa-calendar-alt icon"></i> Expiry Date</label>
+                    <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/YY" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardCVC"><i class="fas fa-lock icon"></i> CVC</label>
+                    <input type="text" id="cardCVC" name="cardCVC" placeholder="123" required>
+                </div>
+                <button type="submit"><i class="fas fa-lock icon"></i> Pay Now</button>
+            </form>
+        </div>
+    </div>
+    <script src="js/checkout.js"></script>
+</body>
+</html>
