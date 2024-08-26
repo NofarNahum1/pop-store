@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pop of the Month</title>
+    <title>Mystery Pop</title>
     <link rel="icon" href="/images/logo.png" type="image/png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -64,7 +64,7 @@
             margin-bottom: 20px;
         }
         .pop-doll h2 {
-            color: #9e0707;
+            color: #420552;
             font-style: italic;
             margin: 5px 0;
             font-size: 30px;
@@ -74,9 +74,11 @@
             text-align: center;
             margin-top: 0px;
         }
-        #popIntro  {
-            color: black;
-            font-weight: bold;
+
+        .pop-doll h3 {
+            margin-top: 0%;
+            font-style: italic;
+            font-size: 20px;
         }
     </style>
 </head>
@@ -90,41 +92,67 @@
             <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
             <a href="#" id="logout"><i class="fa fa-sign-out-alt"></i> Logout</a>
             <a href="/statistics"><i class="fas fa-chart-line"></i> Best Sellers</a>
-            <a href="/mystery-pop.html"><i class="fas fa-question"></i> Mystery POP</a>
+            <a href="/pop-of-the-month.html"><i class="fas fa-star"></i> POP of the month</a>
         </div>
-        <h1>POP! of the Month</h1>
+        <h1>MYSTERY POP!</h1>
         <div class="pop-doll">
-            <h2 id="popTitle">Title</h2>
-            <img id="popImage" src="" alt="Pop Doll">
-            <p id="popIntro">Ladypool is the Pop! of the month, celebrating the release of the new Deadpool & Wolverine movie <br> perfect for fans who want a collectible as fierce and iconic as the characters themselves!</p>
-            <p id="popDescription">Description</p>
-            <p id="popDetails">Details</p>
+            <h2 id="popTitle">Mystery Pop!</h2>
+            <img id="popImage" src="./images/83069_POP_Mystery_BoxView-WEB.png" alt="Mystery Pop Doll">
+            <h3>Guess the Mystery Character</h3>
+            <p id="popDescription">Can you identify the mysterious character?<br> Correct answers will enter a raffle for this mystery pop!</p>
+            <form id="mysteryForm">
+                <input type="text" id="mysteryGuess" placeholder="Enter your guess" required>
+                <button type="submit">Submit</button>
+            </form>
+            <p id="responseMessage"></p>
         </div>
     </div>
     <script>
-        async function fetchPopOfTheMonth() {
+        document.getElementById('mysteryForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const guess = document.getElementById('mysteryGuess').value;
             try {
-                console.log('Fetching Pop of the Month...');
-                const response = await fetch('/api/pop-of-the-month');
-
-                console.log('Response recived:', response);
-                const responseText = await response.text();
-
-                // Attempt to parse the response text as JSON
-                const popOfTheMonth = JSON.parse(responseText);
-
-                // Update the HTML elements with the fetched data
-                document.getElementById('popImage').src = `./images/${popOfTheMonth.image}`;
-                document.getElementById('popTitle').textContent = popOfTheMonth.title;
-                document.getElementById('popDescription').textContent = popOfTheMonth.description;
-                document.getElementById('popDetails').textContent = `Price: $${popOfTheMonth.price}`;
+                const response = await fetch('/api/submit-guess', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ guess })
+                });
+                const result = await response.json();
+                document.getElementById('responseMessage').textContent = result.message;
             } catch (error) {
-                console.error('Error fetching Pop of the Month:', error);
+                document.getElementById('responseMessage').textContent = 'Error submitting your guess. Please try again.';
             }
-        }
-
-        // Fetch and update the Pop of the Month details when the page loads
-        window.onload = fetchPopOfTheMonth;
+        });
     </script>
+<!-- 
+<script>
+    document.getElementById('mysteryForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const guess = document.getElementById('mysteryGuess').value;
+        try {
+            const response = await fetch('/api/submit-guess', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ guess })
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const result = await response.json();
+            if (result.message === 'You win!') {
+                alert('You win!');
+            } else {
+                document.getElementById('responseMessage').textContent = result.message;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('responseMessage').textContent = 'Error submitting your guess. Please try again.';
+        }
+    }); -->
+</script>
 </body>
 </html>

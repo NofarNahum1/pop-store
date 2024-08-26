@@ -48,6 +48,40 @@ app.get('/api/pop-of-the-month', async (req, res) => {
     }
 });
 
+// Variable to store the correct guess
+let correctGuess = 'professor x';
+
+app.post('/api/submit-guess', (req, res) => {
+    const { guess } = req.body;
+    console.log('Received guess:', guess);
+
+    if (!guess) {
+        res.status(400).json({ error: 'Guess is required' });
+        return;
+    }
+
+    if (guess.toLowerCase() === correctGuess.toLowerCase()) {
+        res.json({ message: 'You win!' });
+    } else {
+        res.json({ message: 'Try again!' });
+    }
+});
+
+// Endpoint for admin to update the correct guess
+app.post('/api/update-guess', (req, res) => {
+    const { newGuess } = req.body;
+    if (!newGuess) {
+        res.status(400).json({ error: 'New guess is required' });
+        return;
+    }
+    correctGuess = newGuess;
+    res.json({ message: 'Correct guess updated successfully!' });
+});
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
+
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
