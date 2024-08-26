@@ -96,35 +96,35 @@
         <div class="pop-doll">
             <h2 id="popTitle">Title</h2>
             <img id="popImage" src="" alt="Pop Doll">
-            <p id="popIntro">Ladypool is the Pop! of the month, celebrating the release of the new Deadpool & Wolverine movie <br> perfect for fans who want a collectible as fierce and iconic as the characters themselves!</p>
+            <p id="popIntro">Intro</p>
+            <!-- <p id="popIntro">Ladypool is the Pop! of the month, celebrating the release of the new Deadpool & Wolverine movie <br> perfect for fans who want a collectible as fierce and iconic as the characters themselves!</p> -->
             <p id="popDescription">Description</p>
-            <p id="popDetails">Details</p>
+            <p id="popPrice">Details</p>
         </div>
     </div>
     <script>
-        async function fetchPopOfTheMonth() {
-            try {
-                console.log('Fetching Pop of the Month...');
-                const response = await fetch('/api/pop-of-the-month');
-
-                console.log('Response recived:', response);
-                const responseText = await response.text();
-
-                // Attempt to parse the response text as JSON
-                const popOfTheMonth = JSON.parse(responseText);
-
-                // Update the HTML elements with the fetched data
-                document.getElementById('popImage').src = `./images/${popOfTheMonth.image}`;
-                document.getElementById('popTitle').textContent = popOfTheMonth.title;
-                document.getElementById('popDescription').textContent = popOfTheMonth.description;
-                document.getElementById('popDetails').textContent = `Price: $${popOfTheMonth.price}`;
-            } catch (error) {
-                console.error('Error fetching Pop of the Month:', error);
-            }
-        }
-
-        // Fetch and update the Pop of the Month details when the page loads
-        window.onload = fetchPopOfTheMonth;
+        // Fetch the data from the server when the page loads
+        window.onload = function() {
+        fetch('/api/pop-of-the-month')
+            .then(response => {
+                console.log("response!!!!!", response);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("data", data);
+                document.getElementById('popTitle').innerText = data.title;
+                document.getElementById('popImage').src = `./images/${data.image}`;
+                document.getElementById('popIntro').innerText = data.intro; // If `intro` exists
+                document.getElementById('popDescription').innerText = data.description;
+                document.getElementById('popPrice').innerText = `Price: $ ${data.price}`;
+            })
+            .catch(error => console.error('Error:', error));
+        };
     </script>
 </body>
 </html>
+
+

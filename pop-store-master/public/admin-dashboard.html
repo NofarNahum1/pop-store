@@ -172,6 +172,20 @@
         <div id="adminMessage" class="message-container"></div>
     </form>
 
+    <div class="pop-of-the-month-section">
+        <h2>Choose Pop of the Month</h2>
+        <form id="popOfTheMonthForm">
+            <label for="popTitle">Enter Product Title:</label>
+            <input type="text" id="popTitle" required>
+            
+            <label for="popIntro">Enter Description:</label>
+            <textarea id="popIntro" required></textarea>
+            
+            <button type="submit">Set Pop of the Month</button>
+        </form>
+        <div id="popMonthMessage" class="alert"></div>
+    </div>
+
     <h2>User Activity</h2>
     <form id="userActivityForm">
         <input type="text" id="usernameFilter" name="usernameFilter" placeholder="Filter by username prefix">

@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!token) {
         addMessageElement.textContent = 'You must be logged in to access this page.';
         addMessageElement.className = 'alert error';
+        console.error('No token found');
         setTimeout(() => {
             window.location.href = 'admin-login.html';
         }, 0);
@@ -29,6 +30,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
+        // Check for authentication errors
+        if (response.status === 401 || response.status === 403) {
+            console.error('Authentication error:', response.statusText);
+            // Optionally, redirect to login or show an error message
+            addMessageElement.textContent = 'Authentication error. Please log in again.';
+            addMessageElement.className = 'alert error';
+            localStorage.removeItem('adminToken');
+            setTimeout(() => {
+                window.location.href = 'admin-login.html';
+            }, 2000);
+            return;
+        }
+
+
         if (response.ok) {
             const data = await response.json();
             if (!data.success) {
@@ -37,6 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             throw new Error('Invalid token or server error.');
         }
+
     } catch (error) {
         addMessageElement.textContent = 'Error: ' + error.message;
         addMessageElement.className = 'alert error';
@@ -251,8 +267,43 @@ function displayPurchases(purchases) {
     });
 }
 
-
 // Initial fetch of purchases
 fetchAndDisplayPurchases();
+
+// Handle Pop of the Month form submission
+const popOfTheMonthForm = document.getElementById('popOfTheMonthForm');
+const popMonthMessageElement = document.getElementById('popMonthMessage');
+
+if (popOfTheMonthForm) {
+    popOfTheMonthForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const title = document.getElementById('popTitle').value;
+        const intro = document.getElementById('popIntro').value;
+
+        try {
+            // send the title and description to the server to set the product as Pop of the Month
+            const response = await fetch('/api/admin/pop-of-the-month', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ title, intro })
+            });
+
+            if (response.ok) {
+                popMonthMessage.textContent = 'Pop of the Month set successfully';
+                popMonthMessage.classList.add('success');
+                popMonthMessage.classList.remove('error');
+            } else {
+                throw new Error('Failed to set Pop of the Month');
+            }
+        } catch (error) {
+            popMonthMessage.textContent = error.message;
+            popMonthMessage.classList.add('error');
+            popMonthMessage.classList.remove('success');
+        }
+    });
+}
 
 });

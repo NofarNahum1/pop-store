@@ -126,33 +126,9 @@
             }
         });
     </script>
-<!-- 
-<script>
-    document.getElementById('mysteryForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const guess = document.getElementById('mysteryGuess').value;
-        try {
-            const response = await fetch('/api/submit-guess', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ guess })
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const result = await response.json();
-            if (result.message === 'You win!') {
-                alert('You win!');
-            } else {
-                document.getElementById('responseMessage').textContent = result.message;
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            document.getElementById('responseMessage').textContent = 'Error submitting your guess. Please try again.';
-        }
-    }); -->
 </script>
 </body>
 </html>
+
+
+<!--  להוסיף קאונטר שסופר מספר נסיונות, אם יש הצלחה לבקש פרטים של המשתמש, להחזיר הודעה ליוזר  ולהציג את הבובה -->

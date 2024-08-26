@@ -8,6 +8,7 @@ const fs = require('fs').promises;
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const { getPurchases ,removeProduct,saveProduct, getProducts, saveLog, getLogs } = require('./persist');
+const { checkAuth, setPopOfTheMonth, getPopOfTheMonth } = require('./persist');
 const app = express();
 const verifyToken = require('./middleware/authMiddleware');
 const verifyAdminToken = require('./middleware/adminAuthMiddleware');
@@ -15,38 +16,84 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const getPopOfTheMonth = async () => {
+// Route to generate and serve top-selling products
+app.get('/api/generate-top-selling-products', async (req, res) => {
     try {
-        const filePath = path.join(__dirname, 'data', 'products.json');
-        const data = await fs.readFile(filePath, 'utf8');
-        console.log('Data:', data);
-        const products = JSON.parse(data);
-        console.log('Products fetched successfully:', products.type);
+        // Read and parse the purchase data
+        const data = await fs.readFile('users_purchase.json', 'utf8');
+        const purchases = JSON.parse(data);
 
-        // Find the product with the title "Ladypool"
-        const ladypool = products.find(product => product.title === "Ladypool");
-        // Return the Ladypool object or an appropriate message if not found
-        return ladypool || { message: "Ladypool not found" };
-    } catch (error) {
-        console.error('Error reading or parsing the JSON file:', error);
-        throw error;
-    }
-};
+        // Count the occurrences of each product
+        const productCount = {};
+        purchases.forEach(entry => {
+            const items = entry.purchase || [];
+            items.forEach(item => {
+                const title = item.title;
+                if (title) {
+                    if (!productCount[title]) {
+                        productCount[title] = 0;
+                    }
+                    productCount[title]++;
+                }
+            });
+        });
 
-// Endpoint to fetch Pop! of the Month
-app.get('/api/pop-of-the-month', async (req, res) => {
-    console.log('Received request for Pop of the Month');
-    try {
-        const popOfTheMonth = await getPopOfTheMonth(); // fetches the Pop of the Month from products.json
-        console.log('Fetched Pop of the Month:', popOfTheMonth);
-        res.setHeader('Content-Type', 'application/json');
-        res.json(popOfTheMonth);
+        // Sort the products by count in descending order and get the top 3
+        const topProducts = Object.entries(productCount)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3);
+
+        // Save the top products to a JSON file in the public directory
+        const outputPath = path.join(__dirname, 'public', 'top_selling_products.json');
+        await fs.writeFile(outputPath, JSON.stringify(topProducts, null, 4));
+
+        res.json({ success: true, message: 'Top-selling products generated successfully' });
     } catch (error) {
-        console.error('Error fetching Pop of the Month:', error);
-        res.status(500).json({ error: 'Failed to fetch Pop of the Month' });
-        console.log('Failed to fetch Pop of the Month');
+        console.error('Error generating top-selling products:', error);
+        res.status(500).json({ error: 'Failed to generate top-selling products' });
     }
 });
+
+
+app.get('/api/top-selling-products', (req, res) => {
+    const filePath = path.join(__dirname, 'public', 'top_selling_products.json');
+    res.sendFile(filePath);
+});
+
+
+// const getPopOfTheMonth = async () => {
+//     try {
+//         const filePath = path.join(__dirname, 'data', 'products.json');
+//         const data = await fs.readFile(filePath, 'utf8');
+//         console.log('Data:', data);
+//         const products = JSON.parse(data);
+//         console.log('Products fetched successfully:', products.type);
+
+//         // Find the product with the title "Ladypool"
+//         const ladypool = products.find(product => product.title === "Ladypool");
+//         // Return the Ladypool object or an appropriate message if not found
+//         return ladypool || { message: "Ladypool not found" };
+//     } catch (error) {
+//         console.error('Error reading or parsing the JSON file:', error);
+//         throw error;
+//     }
+// };
+
+// Endpoint to fetch Pop! of the Month
+// app.get('/api/pop-of-the-month', async (req, res) => {
+//     console.log('Received request for Pop of the Month');
+//     try {
+//         const popOfTheMonth = await getPopOfTheMonth(); // fetches the Pop of the Month from products.json
+//         console.log('Fetched Pop of the Month:', popOfTheMonth);
+//         res.setHeader('Content-Type', 'application/json');
+//         res.json(popOfTheMonth);
+//     } catch (error) {
+//         console.error('Error fetching Pop of the Month:', error);
+//         res.status(500).json({ error: 'Failed to fetch Pop of the Month' });
+//         console.log('Failed to fetch Pop of the Month');
+//     }
+// });
+
 
 // Variable to store the correct guess
 let correctGuess = 'professor x';
@@ -67,20 +114,20 @@ app.post('/api/submit-guess', (req, res) => {
     }
 });
 
-// Endpoint for admin to update the correct guess
-app.post('/api/update-guess', (req, res) => {
-    const { newGuess } = req.body;
-    if (!newGuess) {
-        res.status(400).json({ error: 'New guess is required' });
-        return;
-    }
-    correctGuess = newGuess;
-    res.json({ message: 'Correct guess updated successfully!' });
-});
+// // Endpoint for admin to update the correct guess
+// app.post('/api/update-guess', (req, res) => {
+//     const { newGuess } = req.body;
+//     if (!newGuess) {
+//         res.status(400).json({ error: 'New guess is required' });
+//         return;
+//     }
+//     correctGuess = newGuess;
+//     res.json({ message: 'Correct guess updated successfully!' });
+// });
 
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
+// app.listen(3000, () => {
+//     console.log('Server is running on port 3000');
+// });
 
 
 // Configure multer for file uploads
@@ -336,55 +383,57 @@ app.get('/api/admin/purchases', verifyAdminToken, async (req, res) => {
 });
 
 
-// Route to generate and serve top-selling products
-app.get('/api/generate-top-selling-products', async (req, res) => {
+
+
+let body = {}
+// gets the input of the admin and checks if the product is in the products.json file if it is - set the pop of the month
+app.post('/api/admin/pop-of-the-month', verifyAdminToken, async (req, res) => {
+    const { title, intro } = req.body;
+    console.log('body:', req.body); 
+    console.log('Received request to set Pop of the Month:', title, intro);
+
+    if (!title || !intro) {
+        console.log('Invalid data');
+        return res.status(400).json({ error: 'Invalid data' });
+    }
+
     try {
-        // Read and parse the purchase data
-        const data = await fs.readFile('users_purchase.json', 'utf8');
-        const purchases = JSON.parse(data);
+        const productsData = await fs.readFile(path.join(__dirname, 'data', 'products.json'), 'utf8');
+        const products = JSON.parse(productsData);
 
-        // Count the occurrences of each product
-        const productCount = {};
-        purchases.forEach(entry => {
-            const items = entry.purchase || [];
-            items.forEach(item => {
-                const title = item.title;
-                if (title) {
-                    if (!productCount[title]) {
-                        productCount[title] = 0;
-                    }
-                    productCount[title]++;
-                }
-            });
-        });
+        const product = products.find(p => p.title === title);
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
 
-        // Sort the products by count in descending order and get the top 3
-        const topProducts = Object.entries(productCount)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 3);
+        const popOfTheMonth = { title, intro, ...product };
+        console.log('Setting Pop of the Month:', popOfTheMonth);
+        body = popOfTheMonth;
 
-        // Save the top products to a JSON file in the public directory
-        const outputPath = path.join(__dirname, 'public', 'top_selling_products.json');
-        await fs.writeFile(outputPath, JSON.stringify(topProducts, null, 4));
-
-        res.json({ success: true, message: 'Top-selling products generated successfully' });
+        res.status(200).json({ message: 'Pop of the Month set successfully' });
     } catch (error) {
-        console.error('Error generating top-selling products:', error);
-        res.status(500).json({ error: 'Failed to generate top-selling products' });
+        console.error('Error setting Pop of the Month:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
+// Serve the data to the new HTML page via a GET request
+app.get('/api/pop-of-the-month',  async (req, res) => {
+    try {
+        res.json(body); // Send the stored data as JSON
+    }catch (error) {
+        console.error('Error fetching Pop of the Month:', error);
+        res.status(500).json({ error: 'Failed to fetch Pop of the Month' });
+        console.log('Failed to fetch Pop of the Month');
+    }
+  });
 
-app.get('/api/top-selling-products', (req, res) => {
-    const filePath = path.join(__dirname, 'public', 'top_selling_products.json');
-    res.sendFile(filePath);
-});
+
 
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
 
 // Start the server
 const PORT = process.env.PORT || 3000;
