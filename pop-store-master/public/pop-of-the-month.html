@@ -119,7 +119,7 @@
                 document.getElementById('popImage').src = `./images/${data.image}`;
                 document.getElementById('popIntro').innerText = data.intro; // If `intro` exists
                 document.getElementById('popDescription').innerText = data.description;
-                document.getElementById('popPrice').innerText = `Price: $ ${data.price}`;
+                document.getElementById('popPrice').innerText = `Price: $${data.price}`;
             })
             .catch(error => console.error('Error:', error));
         };

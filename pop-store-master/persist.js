@@ -288,50 +288,14 @@ async function getPurchases() {
     }
 }
 
-// const getPopOfTheMonth = async () => {
-//     try {
-//         const filePath = path.join(__dirname, 'data', 'products.json');
-//         const data = await fs.readFile(filePath, 'utf8');
-//         console.log('Data:', data);
-//         const products = JSON.parse(data);
-//         console.log('Products fetched successfully:', products.type);
-
-//         // Find the product with the title "Ladypool"
-//         const ladypool = products.find(product => product.title === "Ladypool");
-//         // Return the Ladypool object or an appropriate message if not found
-//         return ladypool || { message: "Ladypool not found" };
-//     } catch (error) {
-//         console.error('Error reading or parsing the JSON file:', error);
-//         throw error;
-//     }
-// };
-
 // Middleware to check authentication
-function checkAuth(req, res, next) {
-    const token = req.headers['authorization'];
-    if (!token || token !== 'Bearer valid_token') { // Example token check
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-    next();
-}
-
-async function setPopOfTheMonth(pop) {
-    await fs.mkdir(DATA_DIR, { recursive: true });
-    await fs.writeFile(POP_OF_THE_MONTH_FILE, JSON.stringify(pop, null, 2));
-}
-
-async function getPopOfTheMonth() {
-    try {
-        const data = await fs.readFile(POP_OF_THE_MONTH_FILE, 'utf8');
-        return JSON.parse(data);
-    } catch (error) {
-        if (error.code === 'ENOENT') {
-            return null;
-        }
-        throw error;
-    }
-}
-
+// function checkAuth(req, res, next) {
+//     const token = req.headers['authorization'];
+//     if (!token || token !== 'Bearer valid_token') { // Example token check
+//         return res.status(401).json({ error: 'Unauthorized' });
+//     }
+//     next();
+// }
 
 
 
@@ -350,7 +314,4 @@ module.exports = {
     saveLog,
     getLogs,
     getPurchases,
-    checkAuth,
-    setPopOfTheMonth,
-    getPopOfTheMonth
 };

@@ -8,7 +8,7 @@ const fs = require('fs').promises;
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const { getPurchases ,removeProduct,saveProduct, getProducts, saveLog, getLogs } = require('./persist');
-const { checkAuth, setPopOfTheMonth, getPopOfTheMonth } = require('./persist');
+// const { checkAuth, setPopOfTheMonth, getPopOfTheMonth } = require('./persist');
 const app = express();
 const verifyToken = require('./middleware/authMiddleware');
 const verifyAdminToken = require('./middleware/adminAuthMiddleware');
@@ -60,39 +60,6 @@ app.get('/api/top-selling-products', (req, res) => {
     res.sendFile(filePath);
 });
 
-
-// const getPopOfTheMonth = async () => {
-//     try {
-//         const filePath = path.join(__dirname, 'data', 'products.json');
-//         const data = await fs.readFile(filePath, 'utf8');
-//         console.log('Data:', data);
-//         const products = JSON.parse(data);
-//         console.log('Products fetched successfully:', products.type);
-
-//         // Find the product with the title "Ladypool"
-//         const ladypool = products.find(product => product.title === "Ladypool");
-//         // Return the Ladypool object or an appropriate message if not found
-//         return ladypool || { message: "Ladypool not found" };
-//     } catch (error) {
-//         console.error('Error reading or parsing the JSON file:', error);
-//         throw error;
-//     }
-// };
-
-// Endpoint to fetch Pop! of the Month
-// app.get('/api/pop-of-the-month', async (req, res) => {
-//     console.log('Received request for Pop of the Month');
-//     try {
-//         const popOfTheMonth = await getPopOfTheMonth(); // fetches the Pop of the Month from products.json
-//         console.log('Fetched Pop of the Month:', popOfTheMonth);
-//         res.setHeader('Content-Type', 'application/json');
-//         res.json(popOfTheMonth);
-//     } catch (error) {
-//         console.error('Error fetching Pop of the Month:', error);
-//         res.status(500).json({ error: 'Failed to fetch Pop of the Month' });
-//         console.log('Failed to fetch Pop of the Month');
-//     }
-// });
 
 
 // Variable to store the correct guess
