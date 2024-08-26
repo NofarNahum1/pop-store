@@ -15,6 +15,40 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const getPopOfTheMonth = async () => {
+    try {
+        const filePath = path.join(__dirname, 'data', 'products.json');
+        const data = await fs.readFile(filePath, 'utf8');
+        console.log('Data:', data);
+        const products = JSON.parse(data);
+        console.log('Products fetched successfully:', products.type);
+
+        // Find the product with the title "Ladypool"
+        const ladypool = products.find(product => product.title === "Ladypool");
+        // Return the Ladypool object or an appropriate message if not found
+        return ladypool || { message: "Ladypool not found" };
+    } catch (error) {
+        console.error('Error reading or parsing the JSON file:', error);
+        throw error;
+    }
+};
+
+// Endpoint to fetch Pop! of the Month
+app.get('/api/pop-of-the-month', async (req, res) => {
+    console.log('Received request for Pop of the Month');
+    try {
+        const popOfTheMonth = await getPopOfTheMonth(); // fetches the Pop of the Month from products.json
+        console.log('Fetched Pop of the Month:', popOfTheMonth);
+        res.setHeader('Content-Type', 'application/json');
+        res.json(popOfTheMonth);
+    } catch (error) {
+        console.error('Error fetching Pop of the Month:', error);
+        res.status(500).json({ error: 'Failed to fetch Pop of the Month' });
+        console.log('Failed to fetch Pop of the Month');
+    }
+});
+
+
 // Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -312,6 +346,10 @@ app.get('/api/top-selling-products', (req, res) => {
     res.sendFile(filePath);
 });
 
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 
 // Start the server

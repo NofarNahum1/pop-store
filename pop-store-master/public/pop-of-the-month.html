@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pop of the Month</title>
+    <link rel="icon" href="/images/logo.png" type="image/png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #d8e5ef;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .nav {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #007bff;
+            display: flex;
+            align-items: center;
+            font-size: 1.1em;
+        }
+        .nav a i {
+            margin-right: 5px;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: white;
+            background-color: #007bff;
+            padding: 3px;
+        }
+        .pop-doll {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .pop-doll img {
+            max-width: 300px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .pop-doll h2 {
+            color: #333;
+            margin: 10px 0;
+        }
+        .pop-doll p {
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="/store"><i class="fas fa-store"></i> Store</a>
+            <a href="/cart"><i class="fas fa-shopping-cart"></i> Cart</a>
+            <a href="/login"><i class="fas fa-user"></i> Login</a>
+            <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
+            <a href="#" id="logout"><i class="fa fa-sign-out-alt"></i> Logout</a>
+            <a href="/statistics"><i class="fas fa-chart-line"></i> Best Sellers</a>
+        </div>
+        <h1>POP! of the Month</h1>
+        <div class="pop-doll">
+            <h2 id="popTitle">Title</h2>
+            <img id="popImage" src="" alt="Pop Doll">
+            <p id="popDescription">Description</p>
+            <p id="popDetails">Details</p>
+        </div>
+    </div>
+    <script>
+        async function fetchPopOfTheMonth() {
+            try {
+                console.log('Fetching Pop of the Month...');
+                const response = await fetch('/api/pop-of-the-month');
+
+                console.log('Response recived:', response);
+                const responseText = await response.text();
+                // console.log('Raw response:', responseText);
+
+                // Attempt to parse the response text as JSON
+                const popOfTheMonth = JSON.parse(responseText);
+                // Log the parsed JSON for debugging
+                console.log('Pop of the Month:', popOfTheMonth);
+                
+                // const popOfTheMonth = await response.json();
+                // console.log("this is the popOfTheMonth.title: ", popOfTheMonth.title);
+
+                // Update the HTML elements with the fetched data
+                // const pop_image = popOfTheMonth.image;
+                document.getElementById('popImage').src = `./images/${popOfTheMonth.image}`;
+
+                document.getElementById('popTitle').textContent = popOfTheMonth.title;
+                document.getElementById('popDescription').textContent = popOfTheMonth.description;
+                document.getElementById('popDetails').textContent = `Price: $${popOfTheMonth.price}`;
+            } catch (error) {
+                console.error('Error fetching Pop of the Month:', error);
+            }
+        }
+
+        // Fetch and update the Pop of the Month details when the page loads
+        window.onload = fetchPopOfTheMonth;
+    </script>
+</body>
+</html>

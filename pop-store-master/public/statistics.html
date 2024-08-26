@@ -80,7 +80,7 @@
             <a href="/login"><i class="fas fa-user"></i> Login</a>
             <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
             <a href="#" id="logout"><i class="fa fa-sign-out-alt"></i> Logout</a>
-            <a href="/statistics"><i class="fas fa-chart-line"></i> Best Sellers</a>
+            <a href="/pop-of-the-month.html"><i class="fas fa-star"></i> POP of the month</a>
         </div>
         <h1>Best-Selling Products</h1>
         <table class="statistics-table">
@@ -99,6 +99,67 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        async function fetchTopSellingProducts() {
+            try {
+                const response = await fetch('/api/top-selling-products');
+                const topProducts = await response.json();
+
+                const tableBody = document.getElementById('statistics');
+                tableBody.innerHTML = '';
+
+                topProducts.forEach(([title, count]) => {
+                    const row = document.createElement('tr');
+                    const titleCell = document.createElement('td');
+                    const countCell = document.createElement('td');
+
+                    titleCell.textContent = title;
+                    countCell.textContent = count;
+
+                    row.appendChild(titleCell);
+                    row.appendChild(countCell);
+                    tableBody.appendChild(row);
+                });
+
+                // Optionally, you can update the chart here if you have one
+                updateChart(topProducts);
+            } catch (error) {
+                console.error('Error fetching top-selling products:', error);
+            }
+        }
+
+        function updateChart(topProducts) {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            const labels = topProducts.map(([title]) => title);
+            const data = topProducts.map(([, count]) => count);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Sales',
+                        data: data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Fetch top-selling products when the page loads
+        window.onload = fetchTopSellingProducts;
+    </script>
+
     <script src="/js/statistics.js"></script>
 </body>
 </html>
