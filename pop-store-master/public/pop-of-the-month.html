@@ -52,18 +52,27 @@
             flex-direction: column;
             align-items: center;
         }
+
+        .pop-doll img:hover {
+            transform: scale(1.1); /* Scale the image to 110% */
+            transition: transform 0.3s ease; /* Smooth transition */
+        }
+
         .pop-doll img {
             max-width: 300px;
             border-radius: 8px;
             margin-bottom: 20px;
         }
         .pop-doll h2 {
-            color: #333;
-            margin: 10px 0;
+            color: #9e0707;
+            font-style: italic;
+            margin: 5px 0;
+            font-size: 30px;
         }
         .pop-doll p {
             color: #666;
             text-align: center;
+            margin-top: 0px;
         }
     </style>
 </head>
@@ -82,6 +91,7 @@
         <div class="pop-doll">
             <h2 id="popTitle">Title</h2>
             <img id="popImage" src="" alt="Pop Doll">
+            <p>Ladypool is the Pop! of the month, celebrating the release of the new Deadpool & Wolverine movie <br> perfect for fans who want a collectible as fierce and iconic as the characters themselves!</p>
             <p id="popDescription">Description</p>
             <p id="popDetails">Details</p>
         </div>
@@ -94,20 +104,12 @@
 
                 console.log('Response recived:', response);
                 const responseText = await response.text();
-                // console.log('Raw response:', responseText);
 
                 // Attempt to parse the response text as JSON
                 const popOfTheMonth = JSON.parse(responseText);
-                // Log the parsed JSON for debugging
-                console.log('Pop of the Month:', popOfTheMonth);
-                
-                // const popOfTheMonth = await response.json();
-                // console.log("this is the popOfTheMonth.title: ", popOfTheMonth.title);
 
                 // Update the HTML elements with the fetched data
-                // const pop_image = popOfTheMonth.image;
                 document.getElementById('popImage').src = `./images/${popOfTheMonth.image}`;
-
                 document.getElementById('popTitle').textContent = popOfTheMonth.title;
                 document.getElementById('popDescription').textContent = popOfTheMonth.description;
                 document.getElementById('popDetails').textContent = `Price: $${popOfTheMonth.price}`;
