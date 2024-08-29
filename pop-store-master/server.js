@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
@@ -15,6 +16,18 @@ const verifyAdminToken = require('./middleware/adminAuthMiddleware');
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(express.json());
+app.use(express.static('public'));
+
+// Configure session middleware
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60000 } // Session expires after 1 minute for demo purposes
+}));
+
 
 // Route to generate and serve top-selling products
 app.get('/api/generate-top-selling-products', async (req, res) => {
@@ -63,7 +76,7 @@ app.get('/api/top-selling-products', (req, res) => {
 
 
 // Variable to store the correct guess
-let correctGuess = 'professor x';
+let correctGuess = 'groot';
 
 app.post('/api/submit-guess', (req, res) => {
     const { guess } = req.body;
@@ -74,10 +87,24 @@ app.post('/api/submit-guess', (req, res) => {
         return;
     }
 
+    // Initialize guess counter if not present
+    if (!req.session.guessCount) {
+        req.session.guessCount = 0;
+    }
+    
+    req.session.guessCount++;
+
+    // Check if the user has exceeded the maximum number of guesses
+    if (req.session.guessCount > 3) {
+        res.json({ message: 'You have exceeded the maximum number of guesses.' });
+        return;
+    }
+
     if (guess.toLowerCase() === correctGuess.toLowerCase()) {
-        res.json({ message: 'You win!' });
+        res.json({ message: 'You win! Please provide your details.', win: true });
+        // res.json({ message: 'You win!' });
     } else {
-        res.json({ message: 'Try again!' });
+        res.json({ message: 'Try again!', win: false });
     }
 });
 

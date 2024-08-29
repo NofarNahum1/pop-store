@@ -80,6 +80,13 @@
             font-style: italic;
             font-size: 20px;
         }
+        
+        #popImage {
+            transition: opacity 0.5s ease-in-out;
+        }
+        .hidden {
+            opacity: 0;
+        }
     </style>
 </head>
 <body>
@@ -100,13 +107,82 @@
             <img id="popImage" src="./images/83069_POP_Mystery_BoxView-WEB.png" alt="Mystery Pop Doll">
             <h3>Guess the Mystery Character</h3>
             <p id="popDescription">Can you identify the mysterious character?<br> Correct answers will enter a raffle for this mystery pop!</p>
-            <form id="mysteryForm">
-                <input type="text" id="mysteryGuess" placeholder="Enter your guess" required>
-                <button type="submit">Submit</button>
-            </form>
+            <!-- <form id="mysteryForm"> -->
+            <input type="text" id="mysteryGuess" placeholder="Enter your guess" required>
+                <!-- <button type="submit">Submit</button> -->
+            <button id="submitGuessButton" onclick="submitGuess()">Submit Guess</button>
+            <!-- </form> -->
             <p id="responseMessage"></p>
         </div>
     </div>
+
+    <script>
+        async function submitGuess() {
+            const guess = document.getElementById('mysteryGuess').value;
+            try {
+                const response = await fetch('/api/submit-guess', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ guess })
+                });
+                const result = await response.json();
+                document.getElementById('responseMessage').textContent = result.message;
+                
+                if (result.win) {
+                    winPopUp();
+                    // Change the image source if the guess is correct
+                    // document.getElementById('popImage').src = './images/81668_WAG_BlackPanther_POP_GLAM-1-Target-WEB.png';
+                    const popImage = document.getElementById('popImage');
+                    popImage.classList.add('hidden');
+                    setTimeout(() => {
+                        popImage.src = './images/81668_WAG_BlackPanther_POP_GLAM-1-Target-WEB.png';
+                        popImage.classList.remove('hidden');
+                    }, 500); // Match the duration of the CSS transition
+                
+                } else if (result.message === 'You have exceeded the maximum number of guesses.') {
+                    document.getElementById('responseMessage').textContent = result.message;
+                } else {
+                    document.getElementById('responseMessage').textContent = 'Try again!';
+                }
+            } catch (error) {
+                document.getElementById('responseMessage').textContent = 'Error submitting your guess. Please try again.';
+            }
+        }
+
+        function winPopUp() {
+            alert("YOU WON!");
+            let text;
+            let email = prompt("Please enter your email:", "Harry Potter");
+            let address = prompt("Please enter your address");
+            if (email == null || address == null) {
+                text = "You chose not to participate. Your details were not submitted.";
+            } else {
+                text = "Thank you! Your details have been submitted";
+            }
+            document.getElementById("responseMessage").innerHTML = text;
+            // Hide the submit button
+            document.getElementById("submitGuessButton").style.display = "none";
+        }
+    </script>
+
+
+
+    <!-- The Modal -->
+    <!-- <div id="winnerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Congratulations! You guessed correctly.</h3>
+            <form class="winner-form" id="winnerForm">
+                <input type="text" id="userName" placeholder="Enter your name" required>
+                <input type="text" id="userAddress" placeholder="Enter your address" required>
+                <input type="email" id="userEmail" placeholder="Enter your email" required>
+                <button type="submit" id="submitWinnerDetails">Submit Details</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         document.getElementById('mysteryForm').addEventListener('submit', async function(event) {
             event.preventDefault();
@@ -121,12 +197,42 @@
                 });
                 const result = await response.json();
                 document.getElementById('responseMessage').textContent = result.message;
+
+                if (result.win) {
+                    document.getElementById('winnerModal').style.display = 'block';
+                }     
             } catch (error) {
                 document.getElementById('responseMessage').textContent = 'Error submitting your guess. Please try again.';
             }
         });
-    </script>
-</script>
+
+        // Get the modal
+        var modal = document.getElementById('winnerModal');
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName('close')[0];
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        document.getElementById('submitWinnerDetails').addEventListener('click', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('userName').value;
+            const address = document.getElementById('userAddress').value;
+            const email = document.getElementById('userEmail').value;
+            alert(`Thank you, ${name}! Your details have been submitted.`);
+            modal.style.display = 'none';
+        });
+    </script> -->
 </body>
 </html>
 
