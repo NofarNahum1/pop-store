@@ -351,7 +351,7 @@ app.get('/api/admin/purchases', verifyAdminToken, async (req, res) => {
 
 
 
-
+const POP_OF_THE_MONTH_FILE = path.join(__dirname, 'data', 'pop-of-the-month.json');
 let body = {}
 // gets the input of the admin and checks if the product is in the products.json file if it is - set the pop of the month
 app.post('/api/admin/pop-of-the-month', verifyAdminToken, async (req, res) => {
@@ -376,6 +376,9 @@ app.post('/api/admin/pop-of-the-month', verifyAdminToken, async (req, res) => {
         const popOfTheMonth = { title, intro, ...product };
         console.log('Setting Pop of the Month:', popOfTheMonth);
         body = popOfTheMonth;
+        
+        // Save the Pop of the Month data to a file
+        await fs.writeFile(POP_OF_THE_MONTH_FILE, JSON.stringify(popOfTheMonth, null, 2));
 
         res.status(200).json({ message: 'Pop of the Month set successfully' });
     } catch (error) {
@@ -387,14 +390,17 @@ app.post('/api/admin/pop-of-the-month', verifyAdminToken, async (req, res) => {
 // Serve the data to the new HTML page via a GET request
 app.get('/api/pop-of-the-month',  async (req, res) => {
     try {
-        res.json(body); // Send the stored data as JSON
+        const popOfTheMonthData = await fs.readFile(POP_OF_THE_MONTH_FILE, 'utf8');
+        const popOfTheMonth = JSON.parse(popOfTheMonthData);
+        res.json(popOfTheMonth);
+
+        // res.json(body); // Send the stored data as JSON
     }catch (error) {
         console.error('Error fetching Pop of the Month:', error);
         res.status(500).json({ error: 'Failed to fetch Pop of the Month' });
         console.log('Failed to fetch Pop of the Month');
     }
   });
-
 
 
 
