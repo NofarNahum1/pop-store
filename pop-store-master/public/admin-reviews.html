@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="/images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Manage Reviews</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        nav {
+            width: 100%;
+            background-color: #007bff;
+            padding: 30px 0;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        nav a {
+            color: #fff;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        nav a:hover {
+            color: #ffcc00;
+        }
+        h1, h2 {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        h2 {
+            margin-top: 40px;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container"></div>
+        <nav>
+            <a href="index.html"><i class="fa fa-home"></i> Home</a>
+            <a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</a>
+            <a href="login.html"><i class="fa fa-sign-in-alt"></i> Login</a>
+            <a href="#" id="logoutLink"><i class="fa fa-sign-out-alt"></i> Logout</a>
+        </nav>
+        <div class="reviews"></div>
+            <h1>Users Reviews</h1>
+            <div id="reviewsContainer"></div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/admin/reviews')
+                .then(response => response.json())
+                .then(data => {
+                    const reviewsContainer = document.getElementById('reviewsContainer');
+                    data.forEach(review => {
+                        const reviewDiv = document.createElement('div');
+                        reviewDiv.className = 'review';
+                        reviewDiv.innerText = review.comment;
+                        reviewsContainer.appendChild(reviewDiv);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+</html>

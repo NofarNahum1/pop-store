@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reviews</title>
+    <title>Submit Reviews</title>
     <link rel="icon" href="/images/logo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -41,9 +41,9 @@
             text-decoration: underline;
         }
         .reviews {
-            background-color: white;
+            background-color: rgb(177, 214, 223);
             padding: 40px;
-            margin-left: 20%;
+            margin-left: 22%;
             margin-top: 5%;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -51,12 +51,13 @@
             width: 100%;
             text-align: center;
         }
-        .reviews h2 {
+        .reviews h1 {
             color: #333;
+            font-weight: bold;
             margin-bottom: 20px;
         }
         .reviews p {
-            color: #666;
+            color: #525252;
             margin-bottom: 20px;
         }
         .reviews h3 {
@@ -97,16 +98,38 @@
             <a href="/pop-of-the-month.html"><i class="fas fa-star"></i> POP of the month</a>
             <a href="/mystery-pop.html"><i class="fas fa-question"></i> Mystery POP</a>
         </div>
-        <!-- <h1>Reviews</h1> -->
         <div class="reviews">
-            <h2 id="title">Rate us!</h2>
+            <h1 id="title">Rate us!</h1>
             <p id="description">Your input is important to us</p>
             <h3>How would you rate our store?</h3>
-            <input type="text" id="comment" placeholder="Add comment..." required>
-                <!-- <button type="submit">Submit</button> -->
-            <button id="submitButton" onclick="alert('thank you!')">Send</button>
-            <!-- </form> -->
+            <input type="text" id="comment" placeholder="Write your review here..." required>
+            <button id="submitButton" onclick="alert('Thank you for your review!')">Send</button>
             <p id="responseMessage"></p>
         </div>
+    </div>
+    <script>
+        // document.getElementById('submitButton').addEventListener('click', function() {
+        document.getElementById('submitButton').addEventListener('click', async () => {
+            const comment = document.getElementById('comment').value;
+            
+            if (comment) {
+                await fetch('/api/reviews', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ comment })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('responseMessage').innerText = 'Thank you!';
+                    document.getElementById('comment').value = '';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
