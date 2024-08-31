@@ -450,17 +450,17 @@ app.post('/api/reviews', async (req, res) => {
   
 // Serve the data to the new HTML page via a GET request
 app.get('/api/admin/reviews', verifyAdminToken, async (req, res) => {
-      try {
-          const reviewData = await fs.readFile(reviewsFilePath, 'utf8');
-          const reviews = JSON.parse(reviewData);
-          res.json(reviews);
+    try {
+        const reviews = await getReviews();
+        res.json(reviews);
+        console.log('Reviews fetched in the GET req: ', reviews);
   
-      }catch (error) {
-          console.error('Error fetching reviews:', error);
-          res.status(500).json({ error: 'Failed to fetch reviews' });
-          console.log('Failed to fetch reviews');
-      }
-    });
+    }catch (error) {
+        console.error('Error fetching reviews:', error);
+        res.status(500).json({ error: 'Failed to fetch reviews' });
+        console.log('Failed to fetch reviews');
+    }
+});
 
 
 

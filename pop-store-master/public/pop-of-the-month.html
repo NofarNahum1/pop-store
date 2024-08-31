@@ -125,6 +125,43 @@
             })
             .catch(error => console.error('Error:', error));
         };
+
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutLink = document.getElementById('logout');
+
+            logoutLink.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                fetch('/api/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove token from localStorage
+                        localStorage.removeItem('token');
+                        
+                        // Redirect to login page
+                        window.location.href = 'login.html';
+                        alert('You are loged out');
+
+                    } else {
+                        alert('You need to login,in order to logout');
+                        window.location.href = 'login.html';
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Logout error:', error);
+                    alert('You need to login,in order to logout');
+                    window.location.href = 'login.html';
+
+                });
+            });
+        });
+
     </script>
 </body>
 </html>

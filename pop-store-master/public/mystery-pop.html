@@ -166,76 +166,45 @@
             // Hide the submit button
             document.getElementById("submitGuessButton").style.display = "none";
         }
-    </script>
+        
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutLink = document.getElementById('logout');
 
+            logoutLink.addEventListener('click', function(event) {
+                event.preventDefault();
 
-
-    <!-- The Modal -->
-    <!-- <div id="winnerModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h3>Congratulations! You guessed correctly.</h3>
-            <form class="winner-form" id="winnerForm">
-                <input type="text" id="userName" placeholder="Enter your name" required>
-                <input type="text" id="userAddress" placeholder="Enter your address" required>
-                <input type="email" id="userEmail" placeholder="Enter your email" required>
-                <button type="submit" id="submitWinnerDetails">Submit Details</button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        document.getElementById('mysteryForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const guess = document.getElementById('mysteryGuess').value;
-            try {
-                const response = await fetch('/api/submit-guess', {
+                fetch('/api/logout', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ guess })
+                    credentials: 'include'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove token from localStorage
+                        localStorage.removeItem('token');
+                        
+                        // Redirect to login page
+                        window.location.href = 'login.html';
+                        alert('You are loged out');
+
+                    } else {
+                        alert('You need to login,in order to logout');
+                        window.location.href = 'login.html';
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Logout error:', error);
+                    alert('You need to login,in order to logout');
+                    window.location.href = 'login.html';
+
                 });
-                const result = await response.json();
-                document.getElementById('responseMessage').textContent = result.message;
-
-                if (result.win) {
-                    document.getElementById('winnerModal').style.display = 'block';
-                }     
-            } catch (error) {
-                document.getElementById('responseMessage').textContent = 'Error submitting your guess. Please try again.';
-            }
+            });
         });
-
-        // Get the modal
-        var modal = document.getElementById('winnerModal');
-
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName('close')[0];
-
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function() {
-            modal.style.display = 'none';
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
-
-        document.getElementById('submitWinnerDetails').addEventListener('click', function(event) {
-            event.preventDefault();
-            const name = document.getElementById('userName').value;
-            const address = document.getElementById('userAddress').value;
-            const email = document.getElementById('userEmail').value;
-            alert(`Thank you, ${name}! Your details have been submitted.`);
-            modal.style.display = 'none';
-        });
-    </script> -->
+        
+    </script>
 </body>
 </html>
 
 
-<!--  להוסיף קאונטר שסופר מספר נסיונות, אם יש הצלחה לבקש פרטים של המשתמש, להחזיר הודעה ליוזר  ולהציג את הבובה -->

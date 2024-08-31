@@ -45,6 +45,18 @@
             margin-top: 40px;
             font-size: 1.5em;
         }
+        .review {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .review p {
+            margin: 0;
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -53,7 +65,7 @@
             <a href="index.html"><i class="fa fa-home"></i> Home</a>
             <a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</a>
             <a href="login.html"><i class="fa fa-sign-in-alt"></i> Login</a>
-            <a href="#" id="logoutLink"><i class="fa fa-sign-out-alt"></i> Logout</a>
+            <a href="#" id="logout"><i class="fa fa-sign-out-alt"></i> Logout</a>
         </nav>
         <div class="reviews"></div>
             <h1>Users Reviews</h1>
@@ -65,18 +77,65 @@
             fetch('/api/admin/reviews')
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Data received:', data); // Log the data to inspect its structure
+
                     const reviewsContainer = document.getElementById('reviewsContainer');
                     data.forEach(review => {
                         const reviewDiv = document.createElement('div');
                         reviewDiv.className = 'review';
-                        reviewDiv.innerText = review.comment;
+
+                        const reviewText = document.createElement('p');
+                        reviewText.innerText = review.review || 'No comment available';
+
+                        // reviewDiv.innerText = review.review || 'No comment available';
+
+                        reviewDiv.appendChild(reviewText);
                         reviewsContainer.appendChild(reviewDiv);
                     });
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    console.error('You need to login,in order to see the reviews');
                 });
         });
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutLink = document.getElementById('logout');
+
+            logoutLink.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                fetch('/api/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove token from localStorage
+                        localStorage.removeItem('token');
+                        
+                        // Redirect to login page
+                        window.location.href = 'login.html';
+                        alert('You are loged out');
+
+                    } else {
+                        alert('You need to login,in order to logout');
+                        window.location.href = 'login.html';
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Logout error:', error);
+                    alert('You need to login,in order to logout');
+                    window.location.href = 'login.html';
+
+                });
+            });
+        });
+
     </script>
 </body>
 </html>
+

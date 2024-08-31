@@ -103,17 +103,18 @@
             <p id="description">Your input is important to us</p>
             <h3>How would you rate our store?</h3>
             <input type="text" id="comment" placeholder="Write your review here..." required>
-            <button id="submitButton" onclick="alert('Thank you for your review!')">Send</button>
+            <button id="submitButton">Send</button>
             <p id="responseMessage"></p>
         </div>
     </div>
     <script>
-        // document.getElementById('submitButton').addEventListener('click', function() {
-        document.getElementById('submitButton').addEventListener('click', async () => {
-            const comment = document.getElementById('comment').value;
+        document.getElementById('submitButton').addEventListener('click', function() {
+            const comment = document.getElementById('comment').value.trim();
+            const responseMessage = document.getElementById('responseMessage');
             
             if (comment) {
-                await fetch('/api/reviews', {
+                alert('Thank you for your review!');
+                fetch('/api/reviews', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -122,14 +123,59 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('responseMessage').innerText = 'Thank you!';
+                    responseMessage.innerText = 'Thank you!';
+                    responseMessage.style.color = 'green';
                     document.getElementById('comment').value = '';
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    responseMessage.innerText = 'An error occurred. Please try again later.';
                 });
+            } else {
+                responseMessage.innerText = 'Please write a review';
+                responseMessage.style.color = 'red';
+                setTimeout(() => {
+                    responseMessage.innerText = '';
+                }, 1000);
             }
         });
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutLink = document.getElementById('logout');
+
+            logoutLink.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                fetch('/api/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove token from localStorage
+                        localStorage.removeItem('token');
+                        
+                        // Redirect to login page
+                        window.location.href = 'login.html';
+                        alert('You are loged out');
+
+                    } else {
+                        alert('You need to login,in order to logout');
+                        window.location.href = 'login.html';
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Logout error:', error);
+                    alert('You need to login,in order to logout');
+                    window.location.href = 'login.html';
+
+                });
+            });
+        });
+
     </script>
 </body>
 </html>
