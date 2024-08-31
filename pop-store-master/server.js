@@ -8,7 +8,7 @@ const multer = require('multer');
 const fs = require('fs').promises;
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
-const { getPurchases ,removeProduct,saveProduct, getProducts, saveLog, getLogs } = require('./persist');
+const { getPurchases ,removeProduct,saveProduct, getProducts, saveLog, getLogs, getReviews } = require('./persist');
 // const { checkAuth, setPopOfTheMonth, getPopOfTheMonth } = require('./persist');
 const app = express();
 const verifyToken = require('./middleware/authMiddleware');
@@ -420,31 +420,31 @@ const reviewsFilePath = path.join(__dirname, 'data', 'reviews.json');
 // gets the input review of the user and saves it to the reviews.json file
 app.post('/api/reviews', async (req, res) => {
     const { comment } = req.body; 
-    console.log('Received request to save the review:', comment);
 
     if (!comment) {
         console.log('Invalid review text');
         return res.status(400).json({ error: 'Invalid data' });
     }
-    const reviewData = JSON.stringify({ review: comment }, null, 2);
+    // const reviewData = JSON.stringify({ review: comment }, null, 2);
 
     try {
-        // // Read the existing reviews
-        // const data = await fs.readFile(reviewsFilePath, 'utf8');
-        // const reviews = JSON.parse(data);
-        // Append the new review
-        // reviews.push({ review: comment });
-        
-        console.log('Setting review:', reviewData);
-        await fs.writeFile(reviewsFilePath, reviewData, 'utf8');
+        const reviews = await getReviews();
+        console.log('Reviews fetched successfully:', reviews);
+        reviews.push({ review: comment });
+        // console.log('Setting review:', JSON.stringify(reviews, null, 2));
+        await fs.writeFile(reviewsFilePath, JSON.stringify(reviews, null, 2), 'utf8');
         console.log('Successfully wrote to products.json');
 
-        res.status(200).json({ message: 'review set successfully' });
-      } catch (error) {
-            console.log('Error setting the reviews:', error);
-            console.error('Error setting the reviews:', error);
-            res.status(500).json({ error: 'Internal server error' });
-      }
+
+    } catch (error) {
+        console.error('Error setting the reviews:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+        
+        // console.log('Setting review:', reviewData);
+        // await fs.writeFile(reviewsFilePath, reviewData, 'utf8');
+        // console.log('Successfully wrote to products.json');
+
   });
 
   
@@ -462,51 +462,6 @@ app.get('/api/admin/reviews', verifyAdminToken, async (req, res) => {
       }
     });
 
-// const reviewsFilePath = path.join(__dirname, 'data', 'reviews.json');
-// console.log('Reviews file path:', reviewsFilePath);
-// // Endpoint to get reviews
-// app.get('/api/admin/reviews', verifyAdminToken, async (req, res) => {
-//     fs.readFile(reviewsFilePath, 'utf8', (err, data) => {
-//         if (err) {
-//             return res.status(500).json({ error: 'Failed to fetch reviews' });
-//         }
-//         res.json(JSON.parse(data));
-//     });
-// });
-
-
-// let reviews;
-// // Endpoint to submit a review
-// app.post('/api/reviews', verifyAdminToken, async (req, res) => {
-//     const newReview = req.body;
-//     console.log('Received new review:', newReview);
-
-//     fs.readFile(reviewsFilePath, 'utf8', (err, data) => {
-//         if (err) {
-//             console.error('Failed to read reviews:', err);
-//             return res.status(500).json({ error: 'Failed to read reviews' });
-//         }
-//         try {
-//             reviews = JSON.parse(data);
-//             console.log('Parsed reviews:', reviews);
-//         } catch (parseErr) {
-//             console.log('Failed to parse reviews:');
-//             console.error('Failed to parse reviews:', parseErr);
-//             return res.status(500).json({ error: 'Failed to parse reviews' });
-//         }
-
-//         reviews.push(newReview);
-//         console.log('Updated reviews list:', reviews);
-
-//         fs.writeFile(reviewsFilePath, JSON.stringify(reviews, null, 2), (err) => {
-//             if (err) {
-//                 return res.status(500).json({ error: 'Failed to save review' });
-//             }
-//             console.log('Successfully saved new review');
-//             res.status(201).json(newReview);
-//         });
-//     });
-// });
 
 
 app.get('*', (req, res) => {

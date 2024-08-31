@@ -11,6 +11,7 @@ const PRODUCTS_FILE = path.join(DATA_DIR, 'products.json');
 const ADMIN_FILE_PATH = path.join(DATA_DIR, 'admin.json');
 const PURCHASES_FILE = path.join(DATA_DIR, 'users_purchase.json');
 const LOGS_FILE =  path.join(DATA_DIR, 'user_logs.json');
+const REVIEW_FILE = path.join(DATA_DIR, 'reviews.json');
 
 // Ensure that a directory exists; create it if it does not
 async function ensureDirectoryExists(directory) {
@@ -271,8 +272,6 @@ async function getLogs() {
 }
 
 
-
-
 async function getPurchases() {
     await ensureDirectoryExists(DATA_DIR);
     await ensureFileExists(PURCHASES_FILE);
@@ -288,15 +287,22 @@ async function getPurchases() {
     }
 }
 
-// Middleware to check authentication
-// function checkAuth(req, res, next) {
-//     const token = req.headers['authorization'];
-//     if (!token || token !== 'Bearer valid_token') { // Example token check
-//         return res.status(401).json({ error: 'Unauthorized' });
-//     }
-//     next();
-// }
-
+// Get all reviews from the reviews.json file
+async function getReviews() {
+    await ensureDirectoryExists(DATA_DIR);
+    await ensureFileExists(REVIEW_FILE);
+    try {
+        const data = await fs.readFile(REVIEW_FILE, 'utf8');
+        // return JSON.parse(data); // Return Reviews list
+        const reviews = JSON.parse(data);
+        return Array.isArray(reviews) ? reviews : []; // Ensure it returns an array
+    } catch (error) {
+        if (error.code === 'ENOENT') {
+            return []; // Return empty array if file does not exist
+        }
+        throw error;
+    }
+}
 
 
 // Export functions for use in other modules
@@ -314,4 +320,5 @@ module.exports = {
     saveLog,
     getLogs,
     getPurchases,
+    getReviews
 };
