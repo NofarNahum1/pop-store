@@ -111,8 +111,15 @@
         document.getElementById('submitButton').addEventListener('click', function() {
             const comment = document.getElementById('comment').value.trim();
             const responseMessage = document.getElementById('responseMessage');
-            
-            if (comment) {
+
+            const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+            if (!token) {
+                alert('You need to login to submit a review');
+                window.location.href = 'login.html';
+            }
+
+            if (comment && token) {
+                document.getElementById('comment').value = '';
                 alert('Thank you for your review!');
                 fetch('/api/reviews', {
                     method: 'POST',
@@ -132,11 +139,13 @@
                     responseMessage.innerText = 'An error occurred. Please try again later.';
                 });
             } else {
-                responseMessage.innerText = 'Please write a review';
-                responseMessage.style.color = 'red';
-                setTimeout(() => {
-                    responseMessage.innerText = '';
-                }, 1000);
+                if (token) {
+                    responseMessage.innerText = 'Please write a review';
+                    responseMessage.style.color = 'red';
+                    setTimeout(() => {
+                        responseMessage.innerText = '';
+                    }, 1000);
+                }
             }
         });
 
