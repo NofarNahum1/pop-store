@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.token) {
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('username', username); // Save the username to localStorage
                 document.cookie = `token=${data.token}; path=/; max-age=${rememberMe ? 864000 : 1800}; SameSite=Strict`;
 
                 // Log the login activity

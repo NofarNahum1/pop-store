@@ -57,6 +57,10 @@
             margin: 0;
             color: #555;
         }
+        .review .username {
+            font-weight: bold;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -87,7 +91,11 @@
                         const reviewText = document.createElement('p');
                         reviewText.innerText = review.review || 'No comment available';
 
+                        const usernameText = document.createElement('p');
+                        usernameText.className = 'username';
+                        usernameText.innerText = `By: ${review.username || 'Anonymous'}`;
 
+                        reviewDiv.appendChild(usernameText);
                         reviewDiv.appendChild(reviewText);
                         reviewsContainer.appendChild(reviewDiv);
                     });

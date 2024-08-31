@@ -119,6 +119,7 @@
             }
 
             if (comment && token) {
+                const username = localStorage.getItem('username');
                 document.getElementById('comment').value = '';
                 alert('Thank you for your review!');
                 fetch('/api/reviews', {
@@ -126,7 +127,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ comment })
+                    body: JSON.stringify({ username, comment })
                 })
                 .then(response => response.json())
                 .then(data => {

@@ -419,8 +419,7 @@ app.get('/api/pop-of-the-month',  async (req, res) => {
 const reviewsFilePath = path.join(__dirname, 'data', 'reviews.json');
 // gets the input review of the user and saves it to the reviews.json file
 app.post('/api/reviews', async (req, res) => {
-    const { comment } = req.body; 
-    const username = req.user.username;
+    const { username, comment } = req.body; 
     
     console.log('Received review:', comment);
     console.log('Username:', username);
@@ -445,11 +444,6 @@ app.post('/api/reviews', async (req, res) => {
         console.error('Error setting the reviews:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-        
-        // console.log('Setting review:', reviewData);
-        // await fs.writeFile(reviewsFilePath, reviewData, 'utf8');
-        // console.log('Successfully wrote to products.json');
-
   });
 
   
