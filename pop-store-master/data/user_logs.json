@@ -631,5 +631,15 @@
     "datetime": "2024-08-31T14:06:32.896Z",
     "username": "sasi",
     "activity": "login"
+  },
+  {
+    "datetime": "2024-08-31T14:16:12.075Z",
+    "username": "sasi",
+    "activity": "logout"
+  },
+  {
+    "datetime": "2024-08-31T14:16:31.592Z",
+    "username": "sasi",
+    "activity": "login"
   }
 ]

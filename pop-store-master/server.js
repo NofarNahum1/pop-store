@@ -420,6 +420,10 @@ const reviewsFilePath = path.join(__dirname, 'data', 'reviews.json');
 // gets the input review of the user and saves it to the reviews.json file
 app.post('/api/reviews', async (req, res) => {
     const { comment } = req.body; 
+    const username = req.user.username;
+    
+    console.log('Received review:', comment);
+    console.log('Username:', username);
 
     if (!comment) {
         console.log('Invalid review text');
@@ -430,7 +434,8 @@ app.post('/api/reviews', async (req, res) => {
     try {
         const reviews = await getReviews();
         console.log('Reviews fetched successfully:', reviews);
-        reviews.push({ review: comment });
+        // reviews.push({ review: comment });
+        reviews.push({ review: comment, username: username });
         // console.log('Setting review:', JSON.stringify(reviews, null, 2));
         await fs.writeFile(reviewsFilePath, JSON.stringify(reviews, null, 2), 'utf8');
         console.log('Successfully wrote to products.json');
