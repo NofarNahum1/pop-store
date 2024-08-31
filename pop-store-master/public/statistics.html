@@ -3,47 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Best-Selling Products</title>
+    <title>Store Statistics</title>
     <link rel="icon" href="/images/logo.png" type="image/png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
+            max-width: 800px;
+            margin: 0 auto;
             padding: 20px;
-            background-color: #d8e5ef;
-        }
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .nav {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .nav a {
-            text-decoration: none;
-            color: #007bff;
-            display: flex;
-            align-items: center;
-            font-size: 1.1em;
-        }
-        .nav a i {
-            margin-right: 5px;
-        }
-        .nav a:hover {
-            text-decoration: underline;
-        }
-        h1 {
-            margin-bottom: 20px;
+            background-color: #f0f4f8;
             color: #333;
+        }
+        nav {
+            width: 100%;
+            background-color: #007bff;
+            padding: 35px 0;
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex; /* Add this line */
+            justify-content: center; /* Add this line */
+        }
+        nav a {
+            color: #fff;
+            margin: 0 11px;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        nav a:hover {
+            color: #ffcc00;
+        }
+        h1, h2 {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        h2 {
+            margin-top: 40px;
+            font-size: 1.5em;
         }
         .statistics-table {
             width: 100%;
@@ -70,21 +72,18 @@
             text-align: center;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
-        <div class="nav">
-            <a href="/index.html"><i class="fas fa-home"></i> Home</a>
-            <a href="/store"><i class="fas fa-store"></i> Store</a>
-            <a href="#" onclick="checkAuthAndRedirectToCart()"><i class="fas fa-shopping-cart"></i> Cart</a>
-            <a href="/login"><i class="fas fa-user"></i> Login</a>
-            <a href="/register"><i class="fas fa-user-plus"></i> Register</a>
+        <nav>
+            <a href="index.html"><i class="fa fa-home"></i> Home</a>
+            <a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</a>
+            <a href="login.html"><i class="fa fa-sign-in-alt"></i> Login</a>
             <a href="#" id="logout"><i class="fa fa-sign-out-alt"></i> Logout</a>
-            <a href="/pop-of-the-month.html"><i class="fas fa-star"></i> POP of the month</a>
-            <a href="/mystery-pop.html"><i class="fas fa-question"></i> Mystery POP</a>
-            <a href="/reviews.html"><i class="fas fa-comments"></i> Reviews</a>
-        </div>
-        <h1>Best-Selling Products</h1>
+            <a href="admin-reviews.html"><i class="fas fa-comments"></i> Users Reviews</a>
+        </nav>
+        <h1>Sales Statistics</h1>
         <table class="statistics-table">
             <thead>
                 <tr>
@@ -100,41 +99,54 @@
             <canvas id="salesChart"></canvas>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <script>
-        async function fetchTopSellingProducts() {
+        document.addEventListener('DOMContentLoaded', async () => {
             try {
-                const response = await fetch('/api/top-selling-products');
-                const topProducts = await response.json();
+                const response = await fetch('/api/best-sellers');
+                const purchaseDetails = await response.json();
+                const productSales = {};
 
-                const tableBody = document.getElementById('statistics');
-                tableBody.innerHTML = '';
-
-                topProducts.forEach(([title, count]) => {
-                    const row = document.createElement('tr');
-                    const titleCell = document.createElement('td');
-                    const countCell = document.createElement('td');
-
-                    titleCell.textContent = title;
-                    countCell.textContent = count;
-
-                    row.appendChild(titleCell);
-                    row.appendChild(countCell);
-                    tableBody.appendChild(row);
+                // Count the occurrences of each product title
+                purchaseDetails.forEach(purchaseArray => {
+                    purchaseArray.forEach(purchase => {
+                        const title = purchase.title;
+                        if (productSales[title]) {
+                            productSales[title]++;
+                        } else {
+                            productSales[title] = 1;
+                        }
+                    });
                 });
 
-                // Optionally, you can update the chart here if you have one
-                updateChart(topProducts);
-            } catch (error) {
-                console.error('Error fetching top-selling products:', error);
-            }
-        }
+                // Convert the productSales object to an array and sort by sales in descending order
+                const sortedProductSales = Object.entries(productSales)
+                    .map(([title, sales]) => ({ title, sales }))
+                    .sort((a, b) => b.sales - a.sales);               
 
-        function updateChart(topProducts) {
+                // Populate the table with the product name and sales count
+                const statisticsTable = document.getElementById('statistics');
+                sortedProductSales.forEach(({ title, sales }) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${title}</td>
+                    <td>${sales}</td>
+                `;
+                statisticsTable.appendChild(row);
+                });
+
+                // Update the chart with the sorted product sales data
+                updateChart(sortedProductSales);
+
+            } catch (error) {
+                console.error('Error fetching purchases:', error);
+            }
+        });
+
+
+        function updateChart(sortedProductSales) {
             const ctx = document.getElementById('salesChart').getContext('2d');
-            const labels = topProducts.map(([title]) => title);
-            const data = topProducts.map(([, count]) => count);
+            const labels = sortedProductSales.map(({ title }) => title);
+            const data = sortedProductSales.map(({ sales }) => sales);
 
             new Chart(ctx, {
                 type: 'bar',
@@ -157,48 +169,7 @@
                 }
             });
         }
-
-        // Fetch top-selling products when the page loads
-        window.onload = fetchTopSellingProducts;
-
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const logoutLink = document.getElementById('logout');
-
-            logoutLink.addEventListener('click', function(event) {
-                event.preventDefault();
-
-                fetch('/api/logout', {
-                    method: 'POST',
-                    credentials: 'include'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Remove token from localStorage
-                        localStorage.removeItem('token');
-                        
-                        // Redirect to login page
-                        window.location.href = 'login.html';
-                        alert('You are loged out');
-
-                    } else {
-                        alert('You need to login,in order to logout');
-                        window.location.href = 'login.html';
-
-                    }
-                })
-                .catch(error => {
-                    console.error('Logout error:', error);
-                    alert('You need to login,in order to logout');
-                    window.location.href = 'login.html';
-
-                });
-            });
-        });
-
     </script>
 
-    <script src="/js/statistics.js"></script>
 </body>
 </html>

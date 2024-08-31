@@ -681,5 +681,70 @@
     "datetime": "2024-08-31T15:00:24.325Z",
     "username": "roman",
     "activity": "login"
+  },
+  {
+    "datetime": "2024-08-31T17:26:07.524Z",
+    "username": "sasi",
+    "activity": "login"
+  },
+  {
+    "datetime": "2024-08-31T17:26:16.822Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Bride of Frankenstein\""
+  },
+  {
+    "datetime": "2024-08-31T17:26:18.574Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Harley Quinn\""
+  },
+  {
+    "datetime": "2024-08-31T17:26:20.207Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Ladypool\""
+  },
+  {
+    "datetime": "2024-08-31T17:26:22.007Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Spider-Man\""
+  },
+  {
+    "datetime": "2024-08-31T17:26:23.523Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Harry Potter with Birthday Cake\""
+  },
+  {
+    "datetime": "2024-08-31T17:26:24.930Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Hulk \""
+  },
+  {
+    "datetime": "2024-08-31T17:26:27.423Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Captain America\""
+  },
+  {
+    "datetime": "2024-08-31T17:26:29.054Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Black Panther\""
+  },
+  {
+    "datetime": "2024-08-31T17:26:30.912Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"White Knight Batman & White Knight The Joker 2-Pack\""
+  },
+  {
+    "datetime": "2024-08-31T17:34:31.690Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Spider-Man\""
+  },
+  {
+    "datetime": "2024-08-31T17:38:36.458Z",
+    "username": "sasi",
+    "activity": "logout"
+  },
+  {
+    "datetime": "2024-08-31T17:38:38.706Z",
+    "username": "sasi",
+    "activity": "login"
   }
 ]
