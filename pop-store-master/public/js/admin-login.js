@@ -59,3 +59,5 @@ function logActivity(username, activity) {
         console.error('Logging error:', logError);
     });
 }
+
+

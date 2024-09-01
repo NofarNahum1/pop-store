@@ -746,5 +746,30 @@
     "datetime": "2024-08-31T17:38:38.706Z",
     "username": "sasi",
     "activity": "login"
+  },
+  {
+    "datetime": "2024-08-31T22:47:55.488Z",
+    "username": "nofar",
+    "activity": "login"
+  },
+  {
+    "datetime": "2024-08-31T22:48:12.151Z",
+    "username": "nofar",
+    "activity": " add-to-cart: \"Harry Potter with Birthday Cake\""
+  },
+  {
+    "datetime": "2024-08-31T22:48:13.050Z",
+    "username": "nofar",
+    "activity": " add-to-cart: \"Harry Potter with Birthday Cake\""
+  },
+  {
+    "datetime": "2024-08-31T22:50:47.316Z",
+    "username": "nofar",
+    "activity": " add-to-cart: \"Harley Quinn\""
+  },
+  {
+    "datetime": "2024-08-31T22:50:48.514Z",
+    "username": "nofar",
+    "activity": " add-to-cart: \"Ladypool\""
   }
 ]

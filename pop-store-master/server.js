@@ -9,7 +9,6 @@ const fs = require('fs').promises;
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const { getPurchases ,removeProduct,saveProduct, getProducts, saveLog, getLogs, getReviews } = require('./persist');
-// const { checkAuth, setPopOfTheMonth, getPopOfTheMonth } = require('./persist');
 const app = express();
 const verifyToken = require('./middleware/authMiddleware');
 const verifyAdminToken = require('./middleware/adminAuthMiddleware');
@@ -29,6 +28,12 @@ app.use(session({
 }));
 
 
+// the /readme.html route
+app.get('/readme.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'readme.html'));
+});
+
+
 const PurchasesFilePath = path.join(__dirname, 'data', 'users_purchase.json');
 // gets the user purchases(purchase details only) from the users_purchase.json file 
 app.get('/api/best-sellers', async (req, res) => {
@@ -43,53 +48,6 @@ app.get('/api/best-sellers', async (req, res) => {
         console.log('Failed to fetch best sellers');
     }
 });
-
-
-
-// Route to generate and serve top-selling products
-// app.get('/api/generate-top-selling-products', async (req, res) => {
-//     try {
-//         // Read and parse the purchase data
-//         const data = await fs.readFile('users_purchase.json', 'utf8');
-//         const purchases = JSON.parse(data);
-
-//         // Count the occurrences of each product
-//         const productCount = {};
-//         purchases.forEach(entry => {
-//             const items = entry.purchase || [];
-//             items.forEach(item => {
-//                 const title = item.title;
-//                 if (title) {
-//                     if (!productCount[title]) {
-//                         productCount[title] = 0;
-//                     }
-//                     productCount[title]++;
-//                 }
-//             });
-//         });
-
-//         // Sort the products by count in descending order and get the top 3
-//         const topProducts = Object.entries(productCount)
-//             .sort((a, b) => b[1] - a[1])
-//             .slice(0, 3);
-
-//         // Save the top products to a JSON file in the public directory
-//         const outputPath = path.join(__dirname, 'public', 'top_selling_products.json');
-//         await fs.writeFile(outputPath, JSON.stringify(topProducts, null, 4));
-
-//         res.json({ success: true, message: 'Top-selling products generated successfully' });
-//     } catch (error) {
-//         console.error('Error generating top-selling products:', error);
-//         res.status(500).json({ error: 'Failed to generate top-selling products' });
-//     }
-// });
-
-
-// app.get('/api/top-selling-products', (req, res) => {
-//     const filePath = path.join(__dirname, 'public', 'top_selling_products.json');
-//     res.sendFile(filePath);
-// });
-
 
 
 // Variable to store the correct guess

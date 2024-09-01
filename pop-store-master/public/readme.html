@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Readme</title>
+    <link rel="icon" href="/images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        nav {
+            width: 100%;
+            background-color: #007bff;
+            padding: 35px 0;
+            gap: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex; /* Add this line */
+            justify-content: center; /* Add this line */
+        }
+        nav a {
+            color: #fff;
+            margin: 0 11px;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        nav a:hover {
+            color: #ffcc00;
+        }
+        h1, h2 {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        h2 {
+            margin-top: 40px;
+            font-size: 1.5em;
+        }
+        p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #555;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            background-color: #e9ecef;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        ul li p {
+            margin: 5px 0 0 0;
+            font-size: 1em;
+            color: #333;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav>
+        <a href="index.html"><i class="fa fa-home"></i> Home</a>
+        <a href="register.html"><i class="fa fa-user-plus"></i> Register</a>
+        <a href="login.html"><i class="fa fa-sign-in-alt"></i> Login</a>
+        <a href="admin-login.html"><i class="fa fa-user-shield"></i> Admin</a>
+        <a href="llm.html"><i class="fa fa-code"></i> LLM</a>
+    </nav>
+    <div class="container">
+        <h1>Readme</h1>
+        <p>(1) Store Name: Pop-Up Store</p>
+        <p>(2) We sell Funko POP! figures - vinyl figurines of characters from pop culture, movies, and real life.</p>
+        <p>(3) The additional pages we added are: </p>
+        <ul>
+            <li><strong>pop-of-the-month.html:</strong>
+                <p>This page shows the Pop of the Month chosen by the admin along with a description. <br>
+                    The admin can update the Pop of the Month and its description in the pop-of-the-month section of admin-dashboard.html, 
+                    choosing only from Pops that are already in the store's inventory.</p>
+                    <br>
+                    <img src="./images/pop-of-the-month-section.png" alt="Pop of the Month" style="max-width: 90%; height: auto; margin-top: 10px;">
+            </li>
+            <li><strong>mystery-pop.html:</strong>
+                <p>This page gives clients an opportunity to enter a raffle for a mystery Pop.<br> 
+                    The user has three chances to guess correctly. when guessed correctly the user needs to fill his email and address</p>
+            </li>
+            <li><strong>reviews.html and admin-reviews.html:</strong>
+                <p>This page allows clients to leave a review about their experience in our store.<br> 
+                    Simply write your review and click the 'Send' button on the reviews.html page. <br>
+                    The admin can view all the submitted reviews on admin-reviews.html.</p>
+                    <img src="./images/reviews.png" alt="Pop of the Month" style="max-width: 50%; height: auto; margin-top: 10px;">
+            </li>
+            <li><strong>statistics.html:</strong>
+                <p>This page displays the store's sales statistics in a chart and a table for admins only.</p>
+            </li>
+    </ul>
+    <p>(4) What was challenging was handling registration tokens, managing cookies, defending against DOS attacks, and addressing all the technical details.</p>
+    <p>My partner's name: Nir Sharon, id: . <br>My name: Nofar Nahum, id: 316458009.<br><br>
+        What i did is handling the DOS attacks, built all the additional pages, built the tests, fixed some bugs and added missing details<br><br>
+        My partner built the Register, Login\out, Store, Cart and Checkout screen, and part of the admin-dashboard page</p>
+    
+    <p>(5) Specify all the different routes your app supports
+    <ul>
+        <li><strong>'/readme.html'</strong>
+            <p>This route serves the readme.html file tp the client.</p>
+        </li>
+        <li><strong>/api/best-sellers</strong>
+            <p>This route serves part of the purchases data.</p>
+        </li>
+        <li><strong>'/api/submit-guess'</strong>
+            <p>This route handles the submission of guesses from users.</p>
+        </li>
+        <li><strong>'/api/log'</strong>
+            <p>This route handels the log in requests.</p>
+        </li>
+        <li><strong>'/api/logout'</strong>
+            <p>This route handels the log out requests.</p>
+        </li>
+        <li><strong>'/api/admin/logout'</strong>
+            <p>This route handels the admin's log out requests.</p>
+        </li>
+        <li><strong>'/register'</strong>
+            <p>This route serves the register.html file to the user.</p>
+        </li>
+        <li><strong>'/login'</strong>
+            <p>This route serves the login.html file to the user.</p>
+        </li>
+        <li><strong>'/store'</strong>
+            <p>This route serves the store.html file to the user.</p>
+        </li>
+        <li><strong>'/cart'</strong>
+            <p>This route serves the cart.html file to the user.</p>
+        </li>
+        <li><strong>'/statistics'</strong>
+            <p>This route serves the statistics.html file to the user.</p>
+        </li>
+        <li><strong>'/api/products'</strong>
+            <p>This route handles GET requests to fetch all products.</p>
+        </li>
+        <li><strong>'/api/products/search'</strong>
+            <p>This route handles GET requests to search for products based on a query.</p>
+        </li>
+        <li><strong>'/api/cart/items'</strong>
+            <p>This route handles GET requests to fetch items in the user's cart.</p>
+        </li>
+        <li><strong>'/api/cart'</strong>
+            <p>This route handles POST requests to add a product to the user's cart.</p>
+        </li>
+        <li><strong>'/api/cart/delete'</strong>
+            <p>This route handles DELETE requests to remove a product from the user's cart.</p>
+        </li>
+        <li><strong>'/api/cart/clear'</strong>
+            <p>This route handles POST requests to clear the user's cart.</p>
+        </li>
+        <li><strong>'/api/purchase'</strong>
+            <p>This route handles purchase-related requests.</p>
+        </li>
+        <li><strong>'/api/admin/logs'</strong>
+            <p>This route handles GET requests to fetch admin logs.</p>
+        </li>
+        <li><strong>'/api/admin/purchases'</strong>
+            <p>This route handles GET requests to fetch all purchases.</p>
+        </li>
+        <li><strong>'/api/admin/pop-of-the-month'</strong>
+            <p>This route handles POST requests to set the Pop of the Month.</p>
+        </li>
+        <li><strong>'/api/pop-of-the-month'</strong>
+            <p>This route handles GET requests to fetch the Pop of the Month.</p>
+        </li>
+        <li><strong>'/api/reviews'</strong>
+            <p>This route handles POST requests to submit user reviews.</p>
+        </li>
+        <li><strong>'/api/admin/reviews'</strong>
+            <p>This route handles GET requests to fetch all reviews for the admin.</p>
+        </li>
+        <li><strong>'/admin/products'</strong>
+            <p>This route handles POST requests to add a new product (with image upload).</p>
+        </li>
+        <li><strong>'/admin/products'</strong>
+            <p>This route handles DELETE requests to remove a product.</p>
+        </li>
+    </p>
+    </div>
+    <script>
+
+    </script>
+
+</body>
+</html>
