@@ -6,18 +6,52 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs').promises;
+const rateLimit = require('express-rate-limit');
+const axios = require('axios'); // Add axios for HTTP requests
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
-const { getPurchases ,removeProduct,saveProduct, getProducts, saveLog, getLogs, getReviews } = require('./persist');
+const { getPurchases ,removeProduct,saveProduct, getProducts, saveLog, getLogs, getReviews, loadBlacklistedIPs, saveBlacklistedIPs, blacklistedIPs} = require('./persist');
 const app = express();
 const verifyToken = require('./middleware/authMiddleware');
 const verifyAdminToken = require('./middleware/adminAuthMiddleware');
+
+let myIP = '127.0.0.1'; // Set to loopback address for local testing
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(express.json());
 app.use(express.static('public'));
+
+// Middleware to check if IP is blacklisted
+app.use((req, res, next) => {
+    const clientIp = req.ip === '::1' ? '127.0.0.1' : req.ip; // Normalize loopback address
+    console.log('Request from IP:', clientIp);
+    if (clientIp !== myIP && blacklistedIPs.has(clientIp)) {
+        console.log(`IP blacklisted: ${clientIp}`);
+        return res.status(403).send('Your IP has been blacklisted due to excessive requests.');
+    }
+    next();
+});
+
+// Apply rate limiting to all requests
+const limiter = rateLimit({
+    windowMs: 3 * 60 * 1000, // 3 minutes
+    max: 3, // Limit each IP to 500 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.',
+    handler: async (req, res, next, options) => {
+        const clientIp = req.ip === '::1' ? '127.0.0.1' : req.ip; // Normalize loopback address
+        // if (clientIp !== myIP && !blacklistedIPs.has(clientIp) {
+        blacklistedIPs.add(clientIp); // Add IP to blacklist when limit is reached
+        await saveBlacklistedIPs(blacklistedIPs); // Save blacklisted IPs to file
+        console.log(`IP added to blacklist: ${clientIp}`);
+        // }
+        res.status(options.statusCode).send(options.message);
+    },
+    skip: (req, res) => req.ip === myIP
+});
+app.use(limiter);
+
 
 // Configure session middleware
 app.use(session({
@@ -26,6 +60,18 @@ app.use(session({
     saveUninitialized: true,
     cookie: { maxAge: 60000 } // Session expires after 1 minute for demo purposes
 }));
+
+
+// Route to print blacklisted IPs
+app.get('/blacklisted-ips', (req, res) => {
+    const clientIp = req.ip === '::1' ? '127.0.0.1' : req.ip;
+    if (clientIp === myIP) {
+        console.log('Blacklisted IPs:', Array.from(blacklistedIPs));
+        res.send('Check the console for the list of blacklisted IPs.');
+    } else {
+        res.status(403).send('Access denied.');
+    }
+});
 
 
 // the /readme.html route
@@ -444,8 +490,10 @@ app.get('*', (req, res) => {
 
 // Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
+app.listen(PORT, async () => {
+    await loadBlacklistedIPs(); // Load blacklisted IPs on server start
+    console.log(`Server running on port ${PORT}`);
+});
 
 // run with npm start (be inside the dir with the server)
 // website in http://localhost:3000/index.html

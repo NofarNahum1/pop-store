@@ -12,6 +12,8 @@ const ADMIN_FILE_PATH = path.join(DATA_DIR, 'admin.json');
 const PURCHASES_FILE = path.join(DATA_DIR, 'users_purchase.json');
 const LOGS_FILE =  path.join(DATA_DIR, 'user_logs.json');
 const REVIEW_FILE = path.join(DATA_DIR, 'reviews.json');
+const BLACKLIST_FILE = path.join(DATA_DIR, 'blacklistedIPs.json');
+const blacklistedIPs = new Set(); // In-memory store for blacklisted IPs
 
 // Ensure that a directory exists; create it if it does not
 async function ensureDirectoryExists(directory) {
@@ -271,7 +273,6 @@ async function getLogs() {
     }
 }
 
-
 async function getPurchases() {
     await ensureDirectoryExists(DATA_DIR);
     await ensureFileExists(PURCHASES_FILE);
@@ -304,6 +305,38 @@ async function getReviews() {
     }
 }
 
+// Load blacklisted IPs from JSON file
+async function loadBlacklistedIPs() {
+    await ensureDirectoryExists(DATA_DIR);
+    await ensureFileExists(BLACKLIST_FILE);
+    try {
+        const data = await fs.readFile(BLACKLIST_FILE, 'utf8');
+        const ips = JSON.parse(data);
+        ips.forEach(ip => {
+            if (typeof ip === 'string') {
+                blacklistedIPs.add(ip);
+            } else {
+                console.warn('Invalid IP format:', ip);
+            }
+        });
+        console.log('Blacklisted IPs loaded:', ips);
+    } catch (error) {
+        console.error('Error loading blacklisted IPs:', error);
+    }
+}
+
+// Save blacklisted IPs to JSON file
+async function saveBlacklistedIPs(blacklistedIPs) {
+    await ensureDirectoryExists(DATA_DIR);
+    await ensureFileExists(BLACKLIST_FILE);
+    try {
+        const data = JSON.stringify(Array.from(blacklistedIPs), null, 2);
+        await fs.writeFile(BLACKLIST_FILE, data, 'utf8');
+        console.log('Blacklisted IPs saved.');
+    } catch (error) {
+        console.error('Error saving blacklisted IPs:', error);
+    }
+}
 
 
 // Export functions for use in other modules
@@ -321,5 +354,8 @@ module.exports = {
     saveLog,
     getLogs,
     getPurchases,
-    getReviews
+    getReviews,
+    loadBlacklistedIPs,
+    saveBlacklistedIPs,
+    blacklistedIPs
 };
