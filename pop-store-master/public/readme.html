@@ -81,7 +81,7 @@
         <a href="llm.html"><i class="fa fa-code"></i> LLM</a>
     </nav>
     <div class="container">
-        <h1>Readme</h1>
+        <h1>Readme - Nofar</h1>
         <p>(1) Store Name: Pop-Up Store</p>
         <p>(2) We sell Funko POP! figures - vinyl figurines of characters from pop culture, movies, and real life.</p>
         <p>(3) The additional pages we added are: </p>
@@ -107,12 +107,125 @@
                 <p>This page displays the store's sales statistics in a chart and a table for admins only.</p>
             </li>
     </ul>
-    <p>(4) What was challenging was handling registration tokens, managing cookies, defending against DOS attacks, and addressing all the technical details.</p>
-    <p>My partner's name: Nir Sharon, id: 207856642. <br>My name: Nofar Nahum, id: 316458009.<br><br>
+    <p>(4) The most challenging part of this project was ensuring data persistence and seamless integration between the server and client-side components and also defending against DOS attacks.</p>
+
+    <p>(5) My partner's name: Nir Sharon, id: 207856642. <br>My name: Nofar Nahum, id: 316458009.<br>
         What i did is handling the DOS attacks, built all the additional pages, built the tests, fixed some bugs and added missing details<br><br>
-        My partner built the Register, Login\out, Store, Cart and Checkout screen, and part of the admin-dashboard page</p>
+        My partner built the Register, Login\out, Store, Cart and Checkout screen, and the admin-dashboard page</p>
     
-    <p>(5) Specify all the different routes your app supports
+    <p>(6) Specify all the different routes your app supports
+    <ul>
+        <li><strong>'/readme.html'</strong>
+            <p>This route serves the readme.html file tp the client.</p>
+        </li>
+        <li><strong>/api/best-sellers</strong>
+            <p>This route serves part of the purchases data.</p>
+        </li>
+        <li><strong>'/api/submit-guess'</strong>
+            <p>This route handles the submission of guesses from users.</p>
+        </li>
+        <li><strong>'/api/log'</strong>
+            <p>This route handels the log in requests.</p>
+        </li>
+        <li><strong>'/api/logout'</strong>
+            <p>This route handels the log out requests.</p>
+        </li>
+        <li><strong>'/api/admin/logout'</strong>
+            <p>This route handels the admin's log out requests.</p>
+        </li>
+        <li><strong>'/register'</strong>
+            <p>This route serves the register.html file to the user.</p>
+        </li>
+        <li><strong>'/login'</strong>
+            <p>This route serves the login.html file to the user.</p>
+        </li>
+        <li><strong>'/store'</strong>
+            <p>This route serves the store.html file to the user.</p>
+        </li>
+        <li><strong>'/cart'</strong>
+            <p>This route serves the cart.html file to the user.</p>
+        </li>
+        <li><strong>'/statistics'</strong>
+            <p>This route serves the statistics.html file to the user.</p>
+        </li>
+        <li><strong>'/api/products'</strong>
+            <p>This route handles GET requests to fetch all products.</p>
+        </li>
+        <li><strong>'/api/products/search'</strong>
+            <p>This route handles GET requests to search for products based on a query.</p>
+        </li>
+        <li><strong>'/api/cart/items'</strong>
+            <p>This route handles GET requests to fetch items in the user's cart.</p>
+        </li>
+        <li><strong>'/api/cart'</strong>
+            <p>This route handles POST requests to add a product to the user's cart.</p>
+        </li>
+        <li><strong>'/api/cart/delete'</strong>
+            <p>This route handles DELETE requests to remove a product from the user's cart.</p>
+        </li>
+        <li><strong>'/api/cart/clear'</strong>
+            <p>This route handles POST requests to clear the user's cart.</p>
+        </li>
+        <li><strong>'/api/purchase'</strong>
+            <p>This route handles purchase-related requests.</p>
+        </li>
+        <li><strong>'/api/admin/logs'</strong>
+            <p>This route handles GET requests to fetch admin logs.</p>
+        </li>
+        <li><strong>'/api/admin/purchases'</strong>
+            <p>This route handles GET requests to fetch all purchases.</p>
+        </li>
+        <li><strong>'/api/admin/pop-of-the-month'</strong>
+            <p>This route handles POST requests to set the Pop of the Month.</p>
+        </li>
+        <li><strong>'/api/pop-of-the-month'</strong>
+            <p>This route handles GET requests to fetch the Pop of the Month.</p>
+        </li>
+        <li><strong>'/api/reviews'</strong>
+            <p>This route handles POST requests to submit user reviews.</p>
+        </li>
+        <li><strong>'/api/admin/reviews'</strong>
+            <p>This route handles GET requests to fetch all reviews for the admin.</p>
+        </li>
+        <li><strong>'/admin/products'</strong>
+            <p>This route handles POST requests to add a new product (with image upload).</p>
+        </li>
+        <li><strong>'/admin/products'</strong>
+            <p>This route handles DELETE requests to remove a product.</p>
+        </li>
+    </p>
+    <h1>Readme - Nir</h1>
+    <p>(1) Store Name: Pop-Up Store</p>
+    <p>(2) We sell Pop-Up brand toys.</p>
+    <p>(3) The additional pages we added are: </p>
+    <ul>
+        <li>**Mystery Pop**: A page where users can guess the Pop and have a chance to receive a Pop-Up toy.</li>
+        <li>**statistics**: A page for the admin to view the best-selling Pop-Up toys.</li>
+        <li>**Feedback and Reviews**: A page where users can leave feedback and reviews. The admin can access these reviews.</li>
+        <li>**Pop of the Month**: As an admin, log in to the admin panel, select the product you wish to feature, and it will be prominently displayed as the Product of the Month.</li>
+    </ul>
+    <p>How to Operate the Additional Pages: </p>
+    <ul>
+        <li>**Mystery Pop**: Navigate to the page, guess the Pop by typing the product name, and potentially win a Pop-Up toy.</li>
+        <li>**statistics**: Simply click on the page to view the POPs sales statistics.</li>
+        <li>**Feedback and Reviews**: Leave your feedback or review by typing in the provided input fields. If you are an admin, you need to log in to view and manage the feedback.</li>
+        <li>**Pop of the Month**: As an admin, log in to the admin panel, select the product you wish to feature and the users simpley will see it on the website</li>
+    </ul>
+
+    <p>(4) What was challenging:</p>
+    <p>The most challenging part was integrating the front-end and back-end of the website to ensure smooth functionality across all pages.</p>
+    
+    <p>(5) Partner Information: <br>
+            **Partner Name**: Nofar Nahum <br>
+        **Partner ID**: 316458009 <br>
+        **Partner Name**: Nir Sharon <br>
+        **Partner ID**: 207856642 <br>
+    </p>
+    <p>Division of Work:
+    <br>**Me**: Worked on the front-end design and functionality, as well as the back-end logic of the website.</br>
+    **Nofar**: Developed the additional pages (Mystery Pop, statistics,pop of the month, Feedback and Reviews), created tests, and implemented security features for the web application.
+    </p>
+    <p>(6) Specify all the different routes your app supports
     <ul>
         <li><strong>'/readme.html'</strong>
             <p>This route serves the readme.html file tp the client.</p>
@@ -194,9 +307,6 @@
         </li>
     </p>
     </div>
-    <script>
-
-    </script>
 
 </body>
 </html>
