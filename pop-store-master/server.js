@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 // Apply rate limiting to all requests
 const limiter = rateLimit({
     windowMs: 3 * 60 * 1000, // 3 minutes
-    max: 5, // Limit each IP to 500 requests per windowMs
+    max: 600, // Limit each IP to 500 requests per windowMs
     message: 'Too many requests from this IP, please try again later.',
     handler: async (req, res, next, options) => {
         const clientIp = req.ip === '::1' ? '127.0.0.1' : req.ip; // Normalize loopback address
@@ -387,7 +387,6 @@ app.get('/api/admin/purchases', verifyAdminToken, async (req, res) => {
 });
 
 
-
 const POP_OF_THE_MONTH_FILE = path.join(__dirname, 'data', 'pop-of-the-month.json');
 let body = {}
 // gets the input of the admin and checks if the product is in the products.json file if it is - set the pop of the month
@@ -429,6 +428,7 @@ app.get('/api/pop-of-the-month',  async (req, res) => {
     try {
         const popOfTheMonthData = await fs.readFile(POP_OF_THE_MONTH_FILE, 'utf8');
         const popOfTheMonth = JSON.parse(popOfTheMonthData);
+        console.log('Pop of the Month fetched:', popOfTheMonth);
         res.json(popOfTheMonth);
 
     }catch (error) {
