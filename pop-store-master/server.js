@@ -27,8 +27,11 @@ app.use(express.static('public'));
 app.use((req, res, next) => {
     const clientIp = req.ip === '::1' ? '127.0.0.1' : req.ip; // Normalize loopback address
     console.log('Request from IP:', clientIp);
-    if (clientIp !== myIP && blacklistedIPs.has(clientIp)) {
+    // if (clientIp !== myIP && blacklistedIPs.has(clientIp)) {
+    if (blacklistedIPs.has(clientIp)) {
         console.log(`IP blacklisted: ${clientIp}`);
+        req.socket.destroy(); // Close the connection immediately
+        //return; // Stop further processing
         return res.status(403).send('Your IP has been blacklisted due to excessive requests.');
     }
     next();
@@ -37,15 +40,15 @@ app.use((req, res, next) => {
 // Apply rate limiting to all requests
 const limiter = rateLimit({
     windowMs: 3 * 60 * 1000, // 3 minutes
-    max: 3, // Limit each IP to 500 requests per windowMs
+    max: 5, // Limit each IP to 500 requests per windowMs
     message: 'Too many requests from this IP, please try again later.',
     handler: async (req, res, next, options) => {
         const clientIp = req.ip === '::1' ? '127.0.0.1' : req.ip; // Normalize loopback address
-        // if (clientIp !== myIP && !blacklistedIPs.has(clientIp) {
-        blacklistedIPs.add(clientIp); // Add IP to blacklist when limit is reached
-        await saveBlacklistedIPs(blacklistedIPs); // Save blacklisted IPs to file
-        console.log(`IP added to blacklist: ${clientIp}`);
-        // }
+        if (!blacklistedIPs.has(clientIp)) {
+            blacklistedIPs.add(clientIp); // Add IP to blacklist when limit is reached
+            await saveBlacklistedIPs(blacklistedIPs); // Save blacklisted IPs to file
+            console.log(`IP added to blacklist: ${clientIp}`);
+        }
         res.status(options.statusCode).send(options.message);
     },
     skip: (req, res) => req.ip === myIP
@@ -489,10 +492,21 @@ app.get('*', (req, res) => {
 });
 
 // Start the server
+// const PORT = process.env.PORT || 3000;
+// app.listen(PORT, async () => {
+//     await loadBlacklistedIPs(); // Load blacklisted IPs on server start
+//     console.log(`Server running on port ${PORT}`);
+// });
+
+// Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, async () => {
-    await loadBlacklistedIPs(); // Load blacklisted IPs on server start
-    console.log(`Server running on port ${PORT}`);
+loadBlacklistedIPs().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}).catch(error => {
+    console.error('Failed to load blacklisted IPs:', error);
+    process.exit(1); // Exit the process if loading blacklisted IPs fails
 });
 
 // run with npm start (be inside the dir with the server)

@@ -851,5 +851,25 @@
     "datetime": "2024-09-02T15:12:56.599Z",
     "username": "sasi",
     "activity": " add-to-cart: \"Bride of Frankenstein\""
+  },
+  {
+    "datetime": "2024-09-02T20:47:03.669Z",
+    "username": "sasi",
+    "activity": "login"
+  },
+  {
+    "datetime": "2024-09-02T20:47:07.668Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Harley Quinn\""
+  },
+  {
+    "datetime": "2024-09-02T20:47:09.714Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Bride of Frankenstein\""
+  },
+  {
+    "datetime": "2024-09-03T15:25:33.969Z",
+    "username": "sasi",
+    "activity": "login"
   }
 ]
