@@ -107,13 +107,13 @@
     <script>
         // Fetch the data from the server when the page loads
         window.onload = function() {
-        fetch('/api/pop-of-the-month')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
+            fetch('/api/pop-of-the-month')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
             .then(data => {
                 console.log("data", data);
                 document.getElementById('popTitle').innerText = data.title;

@@ -82,6 +82,101 @@ app.get('/readme.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'readme.html'));
 });
 
+const POP_OF_THE_MONTH_FILE = path.join(__dirname, 'data', 'pop-of-the-month.json');
+let body = {}
+// gets the input of the admin and checks if the product is in the products.json file if it is - set the pop of the month
+app.post('/api/admin/pop-of-the-month', verifyAdminToken, async (req, res) => {
+    const { title, intro } = req.body;
+    console.log('body:', req.body); 
+    console.log('Received request to set Pop of the Month:', title, intro);
+
+    if (!title || !intro) {
+        console.log('Invalid data');
+        return res.status(400).json({ error: 'Invalid data' });
+    }
+
+    try {
+        const productsData = await fs.readFile(path.join(__dirname, 'data', 'products.json'), 'utf8');
+        const products = JSON.parse(productsData);
+
+        const product = products.find(p => p.title === title);
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        const popOfTheMonth = { title, intro, ...product };
+        console.log('Setting Pop of the Month:', popOfTheMonth);
+        body = popOfTheMonth;
+        
+        // Save the Pop of the Month data to a file
+        await fs.writeFile(POP_OF_THE_MONTH_FILE, JSON.stringify(popOfTheMonth, null, 2));
+
+        res.status(200).json({ message: 'Pop of the Month set successfully' });
+    } catch (error) {
+        console.error('Error setting Pop of the Month:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Serve the data to the new HTML page via a GET request
+app.get('/api/pop-of-the-month',  async (req, res) => {
+    try {
+        const popOfTheMonthData = await fs.readFile(POP_OF_THE_MONTH_FILE, 'utf8');
+        const popOfTheMonth = JSON.parse(popOfTheMonthData);
+        console.log('Pop of the Month fetched:', popOfTheMonth);
+        res.json(popOfTheMonth);
+
+    }catch (error) {
+        console.error('Error fetching Pop of the Month:', error);
+        res.status(500).json({ error: 'Failed to fetch Pop of the Month' });
+        console.log('Failed to fetch Pop of the Month');
+    }
+  });
+
+const reviewsFilePath = path.join(__dirname, 'data', 'reviews.json');
+// gets the input review of the user and saves it to the reviews.json file
+app.post('/api/reviews',verifyToken, async (req, res) => {
+    const { username, comment } = req.body; 
+    
+    console.log('Received review:', comment);
+    console.log('Username:', username);
+
+    if (!comment) {
+        console.log('Invalid review text');
+        return res.status(400).json({ error: 'Invalid data' });
+    }
+    // const reviewData = JSON.stringify({ review: comment }, null, 2);
+
+    try {
+        const reviews = await getReviews();
+        console.log('Reviews fetched successfully:', reviews);
+        // reviews.push({ review: comment });
+        reviews.push({ review: comment, username: username });
+        // console.log('Setting review:', JSON.stringify(reviews, null, 2));
+        await fs.writeFile(reviewsFilePath, JSON.stringify(reviews, null, 2), 'utf8');
+        console.log('Successfully wrote to products.json');
+
+
+    } catch (error) {
+        console.error('Error setting the reviews:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  
+// Serve the data to the new HTML page via a GET request
+app.get('/api/admin/reviews', verifyAdminToken, async (req, res) => {
+    try {
+        const reviews = await getReviews();
+        res.json(reviews);
+        console.log('Reviews fetched in the GET req: ', reviews);
+  
+    }catch (error) {
+        console.error('Error fetching reviews:', error);
+        res.status(500).json({ error: 'Failed to fetch reviews' });
+        console.log('Failed to fetch reviews');
+    }
+});
 
 const PurchasesFilePath = path.join(__dirname, 'data', 'users_purchase.json');
 // gets the user purchases(purchase details only) from the users_purchase.json file 
@@ -97,7 +192,6 @@ app.get('/api/best-sellers', async (req, res) => {
         console.log('Failed to fetch best sellers');
     }
 });
-
 
 // Variable to store the correct guess
 let correctGuess = 'groot';
@@ -156,7 +250,7 @@ app.post('/api/log', async (req, res) => {
     }
 });
 
-app.post('/api/logout', verifyToken,async (req, res) => {
+app.post('/api/logout', verifyToken, async (req, res) => {
     try {
         const { username, activity } = req.body;
         // Save logout activity log
@@ -170,8 +264,6 @@ app.post('/api/logout', verifyToken,async (req, res) => {
     }
 });
 
-
-
 app.post('/api/admin/logout', verifyAdminToken, async (req, res) => {
     try {
         const adminId = req.adminUsername;
@@ -183,7 +275,6 @@ app.post('/api/admin/logout', verifyAdminToken, async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 });
-
 
 // Logging middleware
 app.use((req, res, next) => {
@@ -322,6 +413,8 @@ app.post('/api/cart/clear', verifyToken, (req, res) => {
     res.json({ success: true, message: 'Cart cleared successfully' });
 });
 
+
+
 app.use(verifyAdminToken);
 app.get('/admin-dashboard', verifyAdminToken, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin-dashboard.html'));
@@ -387,103 +480,7 @@ app.get('/api/admin/purchases', verifyAdminToken, async (req, res) => {
 });
 
 
-const POP_OF_THE_MONTH_FILE = path.join(__dirname, 'data', 'pop-of-the-month.json');
-let body = {}
-// gets the input of the admin and checks if the product is in the products.json file if it is - set the pop of the month
-app.post('/api/admin/pop-of-the-month', verifyAdminToken, async (req, res) => {
-    const { title, intro } = req.body;
-    console.log('body:', req.body); 
-    console.log('Received request to set Pop of the Month:', title, intro);
 
-    if (!title || !intro) {
-        console.log('Invalid data');
-        return res.status(400).json({ error: 'Invalid data' });
-    }
-
-    try {
-        const productsData = await fs.readFile(path.join(__dirname, 'data', 'products.json'), 'utf8');
-        const products = JSON.parse(productsData);
-
-        const product = products.find(p => p.title === title);
-        if (!product) {
-            return res.status(404).json({ error: 'Product not found' });
-        }
-
-        const popOfTheMonth = { title, intro, ...product };
-        console.log('Setting Pop of the Month:', popOfTheMonth);
-        body = popOfTheMonth;
-        
-        // Save the Pop of the Month data to a file
-        await fs.writeFile(POP_OF_THE_MONTH_FILE, JSON.stringify(popOfTheMonth, null, 2));
-
-        res.status(200).json({ message: 'Pop of the Month set successfully' });
-    } catch (error) {
-        console.error('Error setting Pop of the Month:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-// Serve the data to the new HTML page via a GET request
-app.get('/api/pop-of-the-month',  async (req, res) => {
-    try {
-        const popOfTheMonthData = await fs.readFile(POP_OF_THE_MONTH_FILE, 'utf8');
-        const popOfTheMonth = JSON.parse(popOfTheMonthData);
-        console.log('Pop of the Month fetched:', popOfTheMonth);
-        res.json(popOfTheMonth);
-
-    }catch (error) {
-        console.error('Error fetching Pop of the Month:', error);
-        res.status(500).json({ error: 'Failed to fetch Pop of the Month' });
-        console.log('Failed to fetch Pop of the Month');
-    }
-  });
-
-
-
-const reviewsFilePath = path.join(__dirname, 'data', 'reviews.json');
-// gets the input review of the user and saves it to the reviews.json file
-app.post('/api/reviews', async (req, res) => {
-    const { username, comment } = req.body; 
-    
-    console.log('Received review:', comment);
-    console.log('Username:', username);
-
-    if (!comment) {
-        console.log('Invalid review text');
-        return res.status(400).json({ error: 'Invalid data' });
-    }
-    // const reviewData = JSON.stringify({ review: comment }, null, 2);
-
-    try {
-        const reviews = await getReviews();
-        console.log('Reviews fetched successfully:', reviews);
-        // reviews.push({ review: comment });
-        reviews.push({ review: comment, username: username });
-        // console.log('Setting review:', JSON.stringify(reviews, null, 2));
-        await fs.writeFile(reviewsFilePath, JSON.stringify(reviews, null, 2), 'utf8');
-        console.log('Successfully wrote to products.json');
-
-
-    } catch (error) {
-        console.error('Error setting the reviews:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-  });
-
-  
-// Serve the data to the new HTML page via a GET request
-app.get('/api/admin/reviews', verifyAdminToken, async (req, res) => {
-    try {
-        const reviews = await getReviews();
-        res.json(reviews);
-        console.log('Reviews fetched in the GET req: ', reviews);
-  
-    }catch (error) {
-        console.error('Error fetching reviews:', error);
-        res.status(500).json({ error: 'Failed to fetch reviews' });
-        console.log('Failed to fetch reviews');
-    }
-});
 
 
 
