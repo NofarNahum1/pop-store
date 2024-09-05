@@ -14,6 +14,19 @@ const { getPurchases ,removeProduct,saveProduct, getProducts, saveLog, getLogs, 
 const app = express();
 const verifyToken = require('./middleware/authMiddleware');
 const verifyAdminToken = require('./middleware/adminAuthMiddleware');
+const helmet = require('helmet'); // Import Helmet
+
+// Use Helmet to secure your app by setting various HTTP headers
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            "default-src": ["'self'"],
+            "script-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+            "script-src-attr": ["'unsafe-inline'"], // Allow inline event handlers
+            // Add other directives as needed
+        }
+    }
+}));
 
 let myIP = '127.0.0.1'; // Set to loopback address for local testing
 

@@ -944,5 +944,40 @@
     "datetime": "2024-09-03T18:27:25.370Z",
     "username": "nofar",
     "activity": "login"
+  },
+  {
+    "datetime": "2024-09-03T18:29:29.981Z",
+    "username": "sasi",
+    "activity": "login"
+  },
+  {
+    "datetime": "2024-09-03T18:49:10.613Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Harley Quinn\""
+  },
+  {
+    "datetime": "2024-09-03T18:49:12.509Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Bride of Frankenstein\""
+  },
+  {
+    "datetime": "2024-09-03T18:51:22.231Z",
+    "username": "sasi",
+    "activity": "login"
+  },
+  {
+    "datetime": "2024-09-03T18:56:41.423Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Harley Quinn\""
+  },
+  {
+    "datetime": "2024-09-03T18:56:46.042Z",
+    "username": "sasi",
+    "activity": " add-to-cart: \"Bride of Frankenstein\""
+  },
+  {
+    "datetime": "2024-09-03T18:56:49.652Z",
+    "username": "sasi",
+    "activity": "login"
   }
 ]
