@@ -52,17 +52,5 @@
     "description": "DC collection with Pop!",
     "price": 30,
     "image": "1723495877087.png"
-  },
-  {
-    "title": "Rudolph",
-    "description": "Light the way for Santas sleigh! Enjoy the merriest time of the year with a timeless classic!",
-    "price": 12,
-    "image": "1725591511214.png"
-  },
-  {
-    "title": "Rudolph",
-    "description": "Light the way for Santa’s sleigh! Enjoy the merriest time of the year with a timeless classic!",
-    "price": 12,
-    "image": "1725591898749.png"
   }
 ]

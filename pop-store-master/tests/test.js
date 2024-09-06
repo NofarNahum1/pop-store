@@ -55,13 +55,6 @@
         } catch (error) {
             throw new Error(`Failed to authenticate: ${responseText}`);
         }
-        
-        // const data = await response.json();
-        // if (response.ok) {
-        //     return data.token;
-        // } else {
-        //     throw new Error(`Failed to authenticate: ${data.error}`);
-        // }
     }
 
     async function testRoute(route, method = 'GET', body = null, token = null, isAdmin = false) {
@@ -78,7 +71,7 @@
             if (isAdmin) {
                 options.headers['Authorization'] = `Bearer ${token}`;
             } else {
-                options.headers['x-auth-token'] = token; // Use x-auth-token for user
+                options.headers['x-auth-token'] = token;
             }
         }
 
@@ -86,10 +79,10 @@
             const response = await fetch(`${BASE_URL}${route}`, options);
             let data;
             if (route === '/api/admin/logs' || route === '/admin-dashboard' || route === '/cart' || route === '/store' || route === '/login' || route === '/register') {
-                data = await response.text(); // Expecting HTML content
+                data = await response.text(); 
                 console.log(`Test ${method} ${route}: ${response.status} ${response.statusText}`);
             } else {
-                data = await response.json(); // Expecting JSON content
+                data = await response.json();
                 console.log(`Test ${method} ${route}: ${response.status} ${response.statusText}`);
                 console.log('Response:', data);
             }
@@ -556,7 +549,20 @@
                 failed++;
             }
         }
-
+        
+        // Test DELETE /admin/products with existing product
+        if (adminToken) {
+            const title = "Rudolph";
+            if (await testRoute(`/admin/products?title=${encodeURIComponent(title)}`, 'DELETE', null, adminToken, true)) {
+                console.log("+ test for '/admin/products' passed (delete existing product)");
+                console.log('');
+                passed++;
+            } else {
+                console.log("- test for '/admin/products' failed (delete existing product)");
+                console.log('');
+                failed++;
+            }
+        }
         console.log('############################################################');
         console.log('');
 
