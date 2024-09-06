@@ -1,10 +1,8 @@
-// const fs = require('fs');
-// const path = require('path');
-// const fetch = require('node-fetch');
-// const FormData = require('form-data');
-
 (async () => {
     const fetch = (await import('node-fetch')).default;
+    const { FormData } = await import('formdata-node');
+    const { fileFromPath } = await import('formdata-node/file-from-path');
+    const fs = (await import('fs')).promises;
 
     const BASE_URL = 'http://localhost:3000';
 
@@ -87,7 +85,7 @@
         try {
             const response = await fetch(`${BASE_URL}${route}`, options);
             let data;
-            if (route === '/cart' || route === '/store' || route === '/login' || route === '/register') {
+            if (route === '/api/admin/logs' || route === '/admin-dashboard' || route === '/cart' || route === '/store' || route === '/login' || route === '/register') {
                 data = await response.text(); // Expecting HTML content
                 console.log(`Test ${method} ${route}: ${response.status} ${response.statusText}`);
             } else {
@@ -98,6 +96,39 @@
             return response.ok;
         } catch (error) {
             console.error(`Error testing ${method} ${route}:`, error);
+            return false;
+        }
+    }
+
+    async function testPostRouteWithFile(route, formData, token = null, isAdmin = false) {
+        const options = {
+            method: 'POST',
+            headers: {}
+        };
+        if (token) {
+            if (isAdmin) {
+                options.headers['Authorization'] = `Bearer ${token}`;
+            } else {
+                options.headers['x-auth-token'] = token; // Use x-auth-token for user
+            }
+        }
+        options.body = formData;
+        try {
+            const response = await fetch(`${BASE_URL}${route}`, options);
+            const responseText = await response.text(); // Get the response text for debugging
+            console.log('Response status:', response.status); // Log the response status
+            if (response.headers.get('content-type')?.includes('application/json')) {
+                const data = JSON.parse(responseText); // Parse the response text as JSON
+                console.log(`Test POST ${route}: ${response.status} ${response.statusText}`);
+                console.log('Response:', data);
+                return response.ok;
+            } else {
+                console.error(`Unexpected response content-type: ${response.headers.get('content-type')}`);
+                console.error('Raw response text:', responseText.split('\n')[0]); // Log only the first line of the response
+                return false;
+            }
+        } catch (error) {
+            console.error(`Error testing POST ${route}:`, error);
             return false;
         }
     }
@@ -441,11 +472,24 @@
         if (userToken) {
             const deleteData = { title: 'Spider-Man' };
             if (await testRoute('/api/cart/delete', 'DELETE', deleteData, userToken)) {
-                console.log("test for '/api/cart/delete' passed");
+                console.log("+ test for '/api/cart/delete' passed");
                 console.log('');
                 passed++;
             } else {
-                console.log("test for '/api/cart/delete' failed");
+                console.log("- test for '/api/cart/delete' failed");
+                console.log('');
+                failed++;
+            }
+        }
+
+        // Test POST /api/cart/clear
+        if (userToken) {
+            if (await testRoute('/api/cart/clear', 'POST', null, userToken)) {
+                console.log("+ test for '/api/cart/clear' passed");
+                console.log('');
+                passed++;
+            } else {
+                console.log("- test for '/api/cart/clear' failed");
                 console.log('');
                 failed++;
             }
@@ -453,36 +497,69 @@
         console.log('############################################################');
         console.log('');
 
-        // const form = new FormData();
-        // form.append('title', 'Test Product');
-        // form.append('description', 'This is a test product');
-        // form.append('price', '19.99');
-        // // form.append('image', fs.createReadStream(path.join("./public/images", 'reviews.jpg')));
-        // form.append('image', fs.createReadStream('pop-store-master\public\images\reviews.png'));
+        // Test GET /admin-dashboard
+        if (adminToken) {
+            if (await testRoute('/admin-dashboard', 'GET', null, adminToken, true)) {
+                console.log("+ test for '/admin-dashboard' passed");
+                console.log('');
+                passed++;
+            } else {
+                console.log("- test for '/admin-dashboard' failed");
+                console.log('');
+                failed++;
+            }
+        }
 
-        // const options = {
-        //     method: 'POST',
-        //     headers: {
-        //         'Authorization': `Bearer ${adminToken}`
-        //     },
-        //     body: form
-        // };
+        // Test GET /api/admin/logs without filter
+        if (adminToken) {
+            if (await testRoute('/api/admin/logs', 'GET', null, adminToken, true)) {
+                console.log("+ test for '/api/admin/logs' without filter passed");
+                console.log('');
+                passed++;
+            } else {
+                console.log("- test for '/api/admin/logs' without filter failed");
+                console.log('');
+                failed++;
+            }
+        }
 
-        // try {
-        //     const response = await fetch(`${BASE_URL}/admin/products`, options);
-        //     const data = await response.json();
-        //     console.log(`Test POST /admin/products: ${response.status} ${response.statusText}`);
-        //     console.log('Response:', data);
-        //     if (response.ok) {
-        //         console.log('Product added successfully');
-        //     } else {
-        //         console.error('Failed to add product:', data);
-        //     }
-        // } catch (error) {
-        //     console.error('Error testing POST /admin/products:', error);
-        // }
+        // Test GET /api/admin/logs with filter
+        if (adminToken) {
+            const filterQuery = 'nofar1'; // Replace with a relevant filter query
+            if (await testRoute(`/api/admin/logs?filter=${filterQuery}`, 'GET', null, adminToken, true)) {
+                console.log("+ test for '/api/admin/logs' with filter passed");
+                console.log('');
+                passed++;
+            } else {
+                console.log("- test for '/api/admin/logs' with filter failed");
+                console.log('');
+                failed++;
+            }
+        }
 
-        // Add more tests for other routes as needed
+        // Test POST /admin/products
+        if (adminToken) {
+            const formData = new FormData();
+            formData.set('title', 'Rudolph');
+            formData.set('description', 'Light the way for Santa’s sleigh! Enjoy the merriest time of the year with a timeless classic!');
+            formData.set('price', '12');
+            formData.set('image', await fileFromPath('./public/images/testImg.png'));
+
+
+            if (await testPostRouteWithFile('/admin/products', formData, adminToken, true)) {
+                console.log("+ test for '/admin/products' passed");
+                console.log('');
+                passed++;
+            } else {
+                console.log("- test for '/admin/products' failed");
+                console.log('');
+                failed++;
+            }
+        }
+
+        console.log('############################################################');
+        console.log('');
+
 
         console.log('############################################################');
         console.log('');

@@ -447,6 +447,7 @@ app.get('/api/admin/logs', verifyAdminToken, async (req, res) => {
 });
 
 // Admin routes
+// adding a product to the store
 app.post('/admin/products', upload.single('image'), async (req, res) => {
     const { title, description, price } = req.body;
     const image = req.file ? req.file.filename : null;
