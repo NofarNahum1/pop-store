@@ -78,7 +78,7 @@
         try {
             const response = await fetch(`${BASE_URL}${route}`, options);
             let data;
-            if (route === '/api/admin/logs' || route === '/admin-dashboard' || route === '/cart' || route === '/store' || route === '/login' || route === '/register') {
+            if (route === '/some/random/route' || route === '/api/admin/logs' || route === '/admin-dashboard' || route === '/cart' || route === '/store' || route === '/login' || route === '/register') {
                 data = await response.text(); 
                 console.log(`Test ${method} ${route}: ${response.status} ${response.statusText}`);
             } else {
@@ -563,10 +563,37 @@
                 failed++;
             }
         }
+
+        // Test DELETE /admin/products with non-existent product
+        if (adminToken) {
+            const title = "NonExistentProduct";
+            if (await testRoute(`/admin/products?title=${encodeURIComponent(title)}`, 'DELETE', null, adminToken, true)) {
+                console.log("- test for '/admin/products' failed (delete non-existent product)");
+                console.log('');
+                failed++;
+            } else {
+                console.log("+ test for '/admin/products' passed (delete non-existent product)");
+                console.log('');
+                passed++;
+            }
+        }
+
         console.log('############################################################');
         console.log('');
 
-
+        // Test GET * (Catch-All Route)
+        if (adminToken) {
+            const randomRoute = '/some/random/route';
+            if (await testRoute(randomRoute, 'GET', null, adminToken, true)) {
+                console.log("+ test for '*' (catch-all route) passed");
+                console.log('');
+                passed++;
+            } else {
+                console.log("- test for '*' (catch-all route) failed");
+                console.log('');
+                failed++;
+            }
+        }
         console.log('############################################################');
         console.log('');
         console.log(`Tests completed. Passed: ${passed}, Failed: ${failed}`);

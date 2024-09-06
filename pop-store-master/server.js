@@ -497,12 +497,6 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start the server
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, async () => {
-//     await loadBlacklistedIPs(); // Load blacklisted IPs on server start
-//     console.log(`Server running on port ${PORT}`);
-// });
 
 // Start the server
 const PORT = process.env.PORT || 3000;
