@@ -83,13 +83,18 @@
                 options.headers['x-auth-token'] = token; // Use x-auth-token for user
             }
         }
-        // console.log('Request options:', options); // Log the request options for debugging
 
         try {
             const response = await fetch(`${BASE_URL}${route}`, options);
-            const data = await response.json();
-            console.log(`Test ${method} ${route}: ${response.status} ${response.statusText}`);
-            console.log('Response:', data);
+            let data;
+            if (route === '/cart' || route === '/store' || route === '/login' || route === '/register') {
+                data = await response.text(); // Expecting HTML content
+                console.log(`Test ${method} ${route}: ${response.status} ${response.statusText}`);
+            } else {
+                data = await response.json(); // Expecting JSON content
+                console.log(`Test ${method} ${route}: ${response.status} ${response.statusText}`);
+                console.log('Response:', data);
+            }
             return response.ok;
         } catch (error) {
             console.error(`Error testing ${method} ${route}:`, error);
@@ -240,6 +245,214 @@
         console.log('############################################################');
         console.log('');
 
+        // Test GET /api/best-sellers
+        if (await testRoute('/api/best-sellers')) {
+            console.log("+ test for '/api/best-sellers' passed");
+            console.log('');
+            passed++;
+        } else {
+            console.log("- test for '/api/best-sellers' failed");
+            console.log('');
+            failed++;
+        }
+        
+        console.log('############################################################');
+        console.log('');
+
+        // Test POST /api/submit-guess with a correct guess
+        const correctGuessData = { guess: 'groot' };
+        if (await testRoute('/api/submit-guess', 'POST', correctGuessData)) {
+            console.log("+ test for '/api/submit-guess' with correct guess passed");
+            console.log('');
+            passed++;
+        } else {
+            console.log("- test for '/api/submit-guess' with correct guess failed");
+            console.log('');
+            failed++;
+        }
+
+        // Test POST /api/submit-guess with an incorrect guess
+        const incorrectGuessData = { guess: 'wrong' };
+        if (await testRoute('/api/submit-guess', 'POST', incorrectGuessData)) {
+            console.log("+ test for '/api/submit-guess' with incorrect guess passed");
+            console.log('');
+            passed++;
+        } else {
+            console.log("- test for '/api/submit-guess' with incorrect guess failed");
+            console.log('');
+            failed++;
+        }
+
+        // Test POST /api/submit-guess with no guess
+        const noGuessData = {};
+        if (await testRoute('/api/submit-guess', 'POST', noGuessData)) {
+            console.log("- test for '/api/submit-guess' with no guess failed");
+            console.log('');
+            failed++; // This should fail, so we increment failed if it passes
+        } else {
+            console.log("+ test for '/api/submit-guess' with no guess passed");
+            console.log('');
+            passed++; // This should fail, so we increment passed if it fails
+        }
+        console.log('############################################################');
+        console.log('Tests for login, logout and register:');
+        console.log('');
+
+        // Test GET /login
+        if (await testRoute('/login')) {
+            console.log("+ test for '/login' passed");
+            console.log('');
+            passed++;
+        } else {
+            console.log("- test for '/login' failed");
+            console.log('');
+            failed++;
+        }
+
+        // Test POST /api/log with valid data
+        const validLogData = { username: 'testuser', activity: 'login' };
+        if (await testRoute('/api/log', 'POST', validLogData)) {
+            console.log("+ test for '/api/log' passed (saving log data)");
+            console.log('');
+            passed++;
+        } else {
+            console.log("- test for '/api/log' failed");
+            console.log('');
+            failed++;
+        }
+
+        // Test POST /api/logout
+        if (userToken) {
+            const logoutData = { username: 'nofar', activity: 'logout' };
+            if (await testRoute('/api/logout', 'POST', logoutData, userToken)) {
+                console.log("+ test for '/api/logout' passed");
+                console.log('');
+                passed++;
+            } else {
+                console.log("- test for '/api/logout' failed");
+                console.log('');
+                failed++;
+            }
+        }
+
+        // Test POST /api/admin/logout
+        if (adminToken) {
+            const logoutData = { username: 'sasi', activity: 'admin-logout' };
+            if (await testRoute('/api/admin/logout', 'POST', logoutData, adminToken, true)) {
+                console.log("+ test for '/api/admin/logout' passed");
+                console.log('');
+                passed++;
+            } else {
+                console.log("- test for '/api/admin/logout' failed");
+                console.log('');
+                failed++;
+            }
+        }
+        
+        // Test GET /register
+        if (await testRoute('/register')) {
+            console.log("+ test for '/register' passed");
+            console.log('');
+            passed++;
+        } else {
+            console.log("- test for '/register' failed");
+            console.log('');
+            failed++;
+        }
+
+        console.log('############################################################');
+        console.log('');
+
+        // Test GET /store
+        if (await testRoute('/store')) {
+            console.log("+ test for '/store' passed");
+            console.log('');
+            passed++;
+        } else {
+            console.log("- test for '/store' failed");
+            console.log('');
+            failed++;
+        }
+
+        // Test GET /cart
+        if (await testRoute('/cart')) {
+            console.log("+ test for '/cart' passed");
+            console.log('');
+            passed++;
+        } else {
+            console.log("- test for '/cart' failed");
+            console.log('');
+            failed++;
+        }
+
+        // Test GET /api/products
+        if (await testRoute('/api/products')) {
+            console.log("+ test for '/api/products' passed");
+            console.log('');
+            passed++;
+        } else {
+            console.log("- test for '/api/products' failed");
+            console.log('');
+            failed++;
+        }
+
+        // Test GET /api/products/search with a query
+        const searchQuery = 'bride';
+        if (await testRoute(`/api/products/search?query=${searchQuery}`)) {
+            console.log("+ test for '/api/products/search' passed");
+            console.log('');
+            passed++;
+        } else {
+            console.log("- test for '/api/products/search' failed");
+            console.log('');
+            failed++;
+        }
+
+        // Test GET /api/products/search with a query
+        const searchNonExistQuery = 'nonExistPop';
+        if (await testRoute(`/api/products/search?query=${searchNonExistQuery}`)) {
+            console.log("+ test for '/api/products/search' for non exist query passed");
+            console.log('');
+            passed++;
+        } else {
+            console.log("- test for '/api/products/search' for non exist query failed");
+            console.log('');
+            failed++;
+        }
+
+        console.log('############################################################');
+        console.log('');
+
+        // Test POST /api/cart
+        if (userToken) {
+            const cartData = { title: 'Spider-Man' };
+            if (await testRoute('/api/cart', 'POST', cartData, userToken)) {
+                console.log("+ test for '/api/cart' passed");
+                console.log('');
+                passed++;
+            } else {
+                console.log("- test for '/api/cart' failed");
+                console.log('');
+                failed++;
+            }
+        }
+        
+        // Test DELETE /api/cart/delete
+        if (userToken) {
+            const deleteData = { title: 'Spider-Man' };
+            if (await testRoute('/api/cart/delete', 'DELETE', deleteData, userToken)) {
+                console.log("test for '/api/cart/delete' passed");
+                console.log('');
+                passed++;
+            } else {
+                console.log("test for '/api/cart/delete' failed");
+                console.log('');
+                failed++;
+            }
+        }
+        console.log('############################################################');
+        console.log('');
+
         // const form = new FormData();
         // form.append('title', 'Test Product');
         // form.append('description', 'This is a test product');
@@ -271,6 +484,8 @@
 
         // Add more tests for other routes as needed
 
+        console.log('############################################################');
+        console.log('');
         console.log(`Tests completed. Passed: ${passed}, Failed: ${failed}`);
         process.exit(0); // Ensure the script exits after tests complete
     }

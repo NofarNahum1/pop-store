@@ -351,7 +351,7 @@ app.get('/api/products/search', async (req, res) => {
 const userCarts = new Map();
 // Get cart items
 app.get('/api/cart/items', verifyToken, (req, res) => {
-    const userId = req.username; // Changed from req.user.id to req.username
+    const userId = req.username;
     const userCart = userCarts.get(userId) || [];
     res.json(userCart);
 });
@@ -491,11 +491,6 @@ app.get('/api/admin/purchases', verifyAdminToken, async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
-
-
-
-
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
