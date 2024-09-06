@@ -125,7 +125,8 @@
                 fetch('/api/reviews', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'x-auth-token': token
                     },
                     body: JSON.stringify({ username, comment })
                 })

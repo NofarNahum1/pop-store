@@ -53,7 +53,7 @@ app.use((req, res, next) => {
 // Apply rate limiting to all requests
 const limiter = rateLimit({
     windowMs: 3 * 60 * 1000, // 3 minutes
-    max: 600, // Limit each IP to 500 requests per windowMs
+    max: 500, // Limit each IP to 500 requests per windowMs
     message: 'Too many requests from this IP, please try again later.',
     handler: async (req, res, next, options) => {
         const clientIp = req.ip === '::1' ? '127.0.0.1' : req.ip; // Normalize loopback address
@@ -88,7 +88,6 @@ app.get('/blacklisted-ips', (req, res) => {
         res.status(403).send('Access denied.');
     }
 });
-
 
 // the /readme.html route
 app.get('/readme.html', (req, res) => {
@@ -147,6 +146,7 @@ app.get('/api/pop-of-the-month',  async (req, res) => {
   });
 
 const reviewsFilePath = path.join(__dirname, 'data', 'reviews.json');
+
 // gets the input review of the user and saves it to the reviews.json file
 app.post('/api/reviews',verifyToken, async (req, res) => {
     const { username, comment } = req.body; 
@@ -167,11 +167,11 @@ app.post('/api/reviews',verifyToken, async (req, res) => {
         reviews.push({ review: comment, username: username });
         // console.log('Setting review:', JSON.stringify(reviews, null, 2));
         await fs.writeFile(reviewsFilePath, JSON.stringify(reviews, null, 2), 'utf8');
-        console.log('Successfully wrote to products.json');
-
+        console.log('Successfully wrote to reviews.json');
+        res.status(200).json({ message: 'Review added successfully' });
 
     } catch (error) {
-        console.error('Error setting the reviews:', error);
+        console.error('Error setting the reviews:', error.message, error.stack);
         res.status(500).json({ error: 'Internal server error' });
     }
   });

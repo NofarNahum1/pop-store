@@ -979,5 +979,49 @@
     "datetime": "2024-09-03T18:56:49.652Z",
     "username": "sasi",
     "activity": "login"
+  },
+  {
+    "datetime": "2024-09-05T18:32:31.840Z",
+    "username": "sasi",
+    "activity": "login"
+  },
+  {
+    "datetime": "2024-09-05T18:32:34.822Z",
+    "username": "sasi",
+    "activity": "logout"
+  },
+  {
+    "datetime": "2024-09-05T18:42:41.549Z",
+    "username": "nofar",
+    "activity": "login"
+  },
+  {
+    "datetime": "2024-09-05T19:16:41.249Z",
+    "username": "nofar",
+    "activity": "login"
+  },
+  {
+    "datetime": "2024-09-05T19:34:14.480Z",
+    "username": "nofar",
+    "activity": " add-to-cart: \"Harley Quinn\""
+  },
+  {
+    "datetime": "2024-09-05T20:51:29.458Z",
+    "username": "sasi",
+    "activity": "login"
+  },
+  {
+    "datetime": "2024-09-05T20:51:38.823Z",
+    "activity": "admin-logout"
+  },
+  {
+    "datetime": "2024-09-06T00:21:28.350Z",
+    "username": "sasi",
+    "activity": "login"
+  },
+  {
+    "datetime": "2024-09-06T00:22:26.304Z",
+    "username": "sasi",
+    "activity": "logout"
   }
 ]
